@@ -1,0 +1,11 @@
+.git
+.vscode
+.gitignore
+node_modules
+npm-debug.log
+database
+!database/mongo-init.js
+docker
+docs
+*.md
+*.postman_collection.json

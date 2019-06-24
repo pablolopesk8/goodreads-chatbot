@@ -1,0 +1,26 @@
+version: '3'
+services:
+    database:
+        container_name: goodreadsbot-db
+        image: mongo:4.1.11-bionic
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=admin
+            - MONGO_INITDB_ROOT_PASSWORD=123@Abc
+            - MONGO_INITDB_DATABASE=goodreadsbot
+        volumes:
+            - ./database/data:/data/db
+            - ./database/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+        ports:
+            - 3004:27017
+            
+    api:
+        container_name: goodreadsbot-api
+        build:
+            context: .
+            dockerfile: ./docker/node/Dockerfile
+        depends_on:
+            - database
+        volumes:
+            - ./:/usr/src/app
+        ports:
+            - 3003:3000

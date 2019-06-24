@@ -1,0 +1,53 @@
+{
+    "name": "goodreads-chatbot",
+    "version": "0.0.1",
+    "description": "Chatbot connected with Goodreads API",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/pablolopesk8/goodreads-chatbot.git"
+    },
+    "keywords": [
+        "chatbot",
+        "goodreads",
+        "api"
+    ],
+    "license": "MIT",
+    "author": "Pablo Lopes",
+    "main": "src/index.js",
+    "bugs": {
+        "url": "https://github.com/pablolopesk8/goodreads-chatbot/issues"
+    },
+    "homepage": "https://github.com/pablolopesk8/goodreads-chatbot#readme",
+    "scripts": {
+        "start": "node src/index.js",
+        "start:dev": "nodemon src/index.js",
+        "test": "mocha --recursive --no-timeouts",
+        "test:watch": "mocha --watch --recursive --no-timeouts",
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "ajv": "^6.10.0",
+        "body-parser": "^1.19.0",
+        "dotenv": "^8.0.0",
+        "express": "^4.16.4",
+        "mongoose": "^5.5.11",
+        "request": "^2.88.0",
+        "request-promise-native": "^1.0.7"
+    },
+    "devDependencies": {
+        "eslint": "^5.16.0",
+        "mocha": "^6.1.4",
+        "nodemon": "^1.19.0",
+        "should": "^13.2.3",
+        "sinon": "^7.3.2",
+        "supertest": "^4.0.2"
+    },
+    "nodemonConfig": {
+        "restartable": "rs",
+        "ignore": [
+            "node_modules/**/node_modules",
+            "tests/**",
+            "goodreads_chatbot.postman_collection.json"
+        ]
+    }
+}

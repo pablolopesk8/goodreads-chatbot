@@ -1,0 +1,19 @@
+{
+    // configuration to allow debug in mocha tests
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run mocha",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "stopOnEntry": false,
+            "args": [
+                "test/**/*.js",
+                "--no-timeouts"
+            ],
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": null
+        }
+    ]
+}
