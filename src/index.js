@@ -9,10 +9,8 @@ const bodyParser = require('body-parser');
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
-// Get env variables
-require('dotenv').config({ path: __dirname + '/env/.env' });
-const portApi = process.env.PORT_API || 3000;
-const env = process.env.ENV || 'dev'; // eslint-disable-line
+// Get config variables
+const config = require('./config');
 
 // Get database and connect
 const { DBConnect } = require('./services/db.service');
@@ -27,12 +25,12 @@ DBConnect().then(
         });
 
         // start server on the port defined by env
-        server.app = server.listen(portApi, () => {
+        server.app = server.listen(config.portApi, () => {
             // in dev, emit an event to be catch in integration tests
             if (env === 'dev'){
                 server.emit('server-started');
             }            
-            console.log(`Server listening on port ${portApi}`);
+            console.log(`Server listening on port ${config.portApi}`);
         });
     },
     (err) => {

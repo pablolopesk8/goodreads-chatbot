@@ -32,7 +32,8 @@
         "express": "^4.16.4",
         "mongoose": "^5.5.11",
         "request": "^2.88.0",
-        "request-promise-native": "^1.0.7"
+        "request-promise-native": "^1.0.7",
+        "xml-js": "^1.6.11"
     },
     "devDependencies": {
         "eslint": "^5.16.0",
