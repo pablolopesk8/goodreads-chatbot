@@ -13,7 +13,7 @@ const DBConnect = async () => {
         auth: { user: config.mongodbUser, password: config.mongodbPass },
         useNewUrlParser: true
     });
-    //console.log(`Connected to mongodb with: ${mongoHost}:${mongoPort}/${mongoDatabase}`);
+    //console.log(`Connected to mongodb with: ${config.mongodbHost}:${config.mongodbPort}/${config.mongodbDatabase}`);
     return con;
 };
 

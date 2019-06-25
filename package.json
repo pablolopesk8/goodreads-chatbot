@@ -23,7 +23,10 @@
         "start:dev": "nodemon src/index.js",
         "test": "mocha --recursive --no-timeouts",
         "test:watch": "mocha --watch --recursive --no-timeouts",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "webhook": "forever start forever-server.js",
+        "webhook:logs": "forever logs forever-server.js",
+        "webhook:stopall": "forever stopall"
     },
     "dependencies": {
         "ajv": "^6.10.0",
@@ -37,6 +40,8 @@
     },
     "devDependencies": {
         "eslint": "^5.16.0",
+        "forever": "^1.0.0",
+        "localtunnel": "^1.9.2",
         "mocha": "^6.1.4",
         "nodemon": "^1.19.0",
         "should": "^13.2.3",

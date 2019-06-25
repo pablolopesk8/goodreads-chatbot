@@ -11,6 +11,6 @@ RUN npm install
 
 EXPOSE 3000
 
-CMD npm install && npm run start:dev
+CMD npm install && npm run webhook && npm run start:dev
 # If you are building your code for production
-# CMD npm install && npm start
+# CMD npm i --only=production && npm start
