@@ -11,7 +11,7 @@ module.exports = {
     serverUrl: process.env.SERVER_URL,
 
     // database variables
-    mongodbUser: MONGODB_USER,
+    mongodbUser: process.env.MONGODB_USER,
     mongodbPass: process.env.MONGODB_PASS,
     mongodbHost: process.env.MONGODB_HOST,
     mongodbPort: process.env.MONGODB_PORT,
@@ -25,8 +25,8 @@ module.exports = {
     facebookVerifyToken: process.env.FACEBOOK_VERIFY_TOKEN,
     facebookPlatformDomain: "https://graph.facebook.com",
     facebookPlatformVersion: "v3.2",
-    facebookGraphUrl = `${this.facebookPlatformDomain}/${this.facebookPlatformVersion}`,
-    facebookWebhookUrl = `${this.serverUrl}/webhook`,
+    facebookGraphUrl: `${this.facebookPlatformDomain}/${this.facebookPlatformVersion}`,
+    facebookWebhookUrl: `${this.serverUrl}/webhook`,
 
     // goodreads variables
     goodreadsAppName: process.env.GOODREADS_APP_NAME,

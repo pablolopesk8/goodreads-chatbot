@@ -1,3 +1,4 @@
+/* eslint-disable */
 /** Init file to create user, database and schema**/
 conn = new Mongo();
 db = conn.getDB("goodreadsbot");
