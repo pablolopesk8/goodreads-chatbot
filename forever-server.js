@@ -1,5 +1,6 @@
 const localtunnel = require('localtunnel');
-localtunnel(3003, { subdomain: 'pablolopesk8' }, (err, tunnel) => {
+const config = require('./src/config');
+localtunnel(config.portApi, { subdomain: config.localtunnelSubdomain }, (err, tunnel) => {
     if (err)
         console.log(`LT error: ${err}`)
     

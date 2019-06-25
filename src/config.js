@@ -9,6 +9,7 @@ module.exports = {
     portApi: process.env.PORT_API || 3000,
     env: process.env.ENV || 'dev',
     serverUrl: process.env.SERVER_URL,
+    localtunnelSubdomain: process.env.LOCALTUNNEL_SUBDOMAIN,
 
     // database variables
     mongodbUser: process.env.MONGODB_USER,
