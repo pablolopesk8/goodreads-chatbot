@@ -17,7 +17,7 @@ db.createCollection("users", {
     validator: {
         $jsonSchema: {
             bsonType: "object",
-            required: ["messengerId", "firstName", "currentState"],
+            required: ["messengerId", "firstName"],
             additionalProperties: true,
             properties: {
                 messengerId: {
@@ -30,7 +30,15 @@ db.createCollection("users", {
                 },
                 currentState: {
                     enum: ["CHOOSING_TYPE_SEARCH", "SEARCHING_BY_ID", "SEARCHING_BY_TITLE", "CHOOSING_BOOK", "VIEWING BOOK", null],
-                    description: "string required"
+                    description: "state of user on the conversation flow. not required"
+                },
+                booksShowed: {
+                    bsonType: "array",
+                    description: "array of the book goodreadsIds showed for the user. not required",
+                    minItems: 0,
+                    items: {
+                        bsonType: "string"
+                    }
                 }
             }
         }
@@ -72,8 +80,8 @@ db.createCollection("books", {
                         bsonType: "string"
                     }
                 },
-                shouldBy: {
-                    enum: [true, false],
+                shouldBuy: {
+                    bsonType: "boolean",
                     description: "information if user should by or not. not required"
                 }
             }
