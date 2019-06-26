@@ -1,7 +1,5 @@
 /* eslint-disable */
 /** Init file to create user, database and schema**/
-db.auth("admin", "123@Abc");
-
 db.createUser(
     {
         user: "admin_goodreadsbot",
@@ -81,7 +79,7 @@ db.createCollection("books", {
                     }
                 },
                 shouldBuy: {
-                    bsonType: "boolean",
+                    bsonType: "bool",
                     description: "information if user should by or not. not required"
                 }
             }

@@ -10,7 +10,29 @@ const { Schema } = mongoose;
  *      It's needed a custom validator, that won't be created at this moment
  */
 const booksModel = new Schema({
-
+    goodreadsId: {
+        type: String,
+        required: [true, 'goodreadsId is required'],
+        unique: true
+    },
+    title: {
+        type: String,
+        required: [true, 'title is required'],
+        unique: true
+    },
+    author: {
+        type: String,
+        required: [true, 'author is required'],
+        unique: true
+    },
+    smallImage: {
+        type: String,
+        required: [true, 'smallImage is required'],
+        unique: true
+    },
+    isbn: String,
+    reviews: [ String ],
+    shouldBuy: Boolean
 });
 
 module.exports = mongoose.model('Books', booksModel);

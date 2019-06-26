@@ -26,16 +26,22 @@ describe('Model User Test', () => {
 
             user.validate((err) => {
                 err.errors.should.have.property('currentState');
-                err.errors['currentState'].should.have.property('message').be.equal('currentState needs to be an valid item');
+                err.errors['currentState'].should.have.property('message')
+                    .be.equal('`wrong` is not a valid enum value for path `currentState`.');
             });
         });
 
         it('Should be have a validation for booksShowed is an array', () => {
-            const user = new Users({ messengerId: "123456asd", firstName: "name", currentState: "wrong", booksShowed: "notArray" });
+            const user = new Users({
+                messengerId: "123456asd",
+                firstName: "name",
+                currentState: "CHOOSING_TYPE_SEARCH",
+                booksShowed: {}
+            });
 
             user.validate((err) => {
                 err.errors.should.have.property('booksShowed');
-                err.errors['booksShowed'].should.have.property('message').be.equal('booksShowed needs to be an array');
+                err.errors['booksShowed'].should.have.property('message').be.equal('Cast to Array failed for value "{}" at path "booksShowed"');
             });
         });
 

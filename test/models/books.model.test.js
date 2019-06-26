@@ -45,12 +45,12 @@ describe('Model Books Test', () => {
                 title: "any title of book",
                 author: "Unknown Author",
                 smallImage: "http://url.com",
-                reviews: "notArray"
+                reviews: {}
             });
 
             book.validate((err) => {
                 err.errors.should.have.property('reviews');
-                err.errors['reviews'].should.have.property('message').be.equal('reviews needs to be an array');
+                err.errors['reviews'].should.have.property('message').be.equal('Cast to Array failed for value "{}" at path "reviews"');
             });
         });
 
@@ -66,7 +66,7 @@ describe('Model Books Test', () => {
 
             book.validate((err) => {
                 err.errors.should.have.property('shouldBuy');
-                err.errors['shouldBuy'].should.have.property('message').be.equal('shouldBuy needs to be a boolean');
+                err.errors['shouldBuy'].should.have.property('message').be.equal('Cast to Boolean failed for value "not boolean" at path "shouldBuy"');
             });
         });
 
