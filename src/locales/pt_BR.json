@@ -1,0 +1,9 @@
+{
+    "profile": {
+        "greeting": "This is a Chatbot for Goodreads Search"
+    },
+    "getStarted": {
+        "welcome": "Hi {{userFirstName}}! Welcome to Goodreads API.",
+        "questionTypeSearch": "Which do you want to search?"
+    }
+}
