@@ -4,6 +4,19 @@
     },
     "getStarted": {
         "welcome": "Hi {{userFirstName}}! Welcome to Goodreads API.",
-        "questionTypeSearch": "Which do you want to search?"
+        "questionTypeSearch": "Which do you want to search?",
+        "buttonSearchId": "By Goodreads ID",
+        "buttonSearchName": "By Book Name"
+    },
+    "booksList": {
+        "initial": "These are the books matched with your choice",
+        "buttonChooseBook": "Choose this!",
+        "buttonChooseThis": "booksList.buttonChooseThis"
+    },
+    "suggestBook": {
+        "affirmative": ":) This book seems a good option!",
+        "negative": ":( This book seems a bad option!",
+        "nonconclusive": "¯\\_(ツ)_/¯ The opinions about this book are very confused",
+        "buttonSearchAnother": "Search another book"
     }
 }
