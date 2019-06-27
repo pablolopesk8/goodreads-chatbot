@@ -26,21 +26,21 @@ module.exports = {
     facebookVerifyToken: process.env.FACEBOOK_VERIFY_TOKEN,
     facebookPlatformDomain: "https://graph.facebook.com",
     facebookPlatformVersion: "v3.2",
-    facebookGraphUrl: `${this.facebookPlatformDomain}/${this.facebookPlatformVersion}`,
-    facebookWebhookUrl: `${this.serverUrl}/webhook`,
+    get facebookGraphUrl() { return `${this.facebookPlatformDomain}/${this.facebookPlatformVersion}` },
+    get facebookWebhookUrl() { return `${this.serverUrl}/webhook` },
 
     // goodreads variables
     goodreadsAppName: process.env.GOODREADS_APP_NAME,
     goodreadsKey: process.env.GOODREADS_KEY,
     goodreadsSecret: process.env.GOODREADS_SECRET,
     goodreadsBaseUrl: `https://www.goodreads.com/`,
-    goodreadsSearchBooksByTitleUrl: `${this.goodreadsBaseUrl}/search/index.xml`,
-    goodreadsSearchBookByIdUrl: `${this.goodreadsBaseUrl}/book/show/`,
-    goodreadsGetReviewByIsbnUrl: `${this.goodreadsBaseUrl}/api/reviews_widget_iframe`,
+    get goodreadsSearchBooksByTitleUrl() { return `${this.goodreadsBaseUrl}/search/index.xml` },
+    get goodreadsSearchBookByIdUrl() { return `${this.goodreadsBaseUrl}/book/show/` },
+    get goodreadsGetReviewByIsbnUrl() { return `${this.goodreadsBaseUrl}/api/reviews_widget_iframe` },
 
     // ibm variables
     watsonApiVersion: '2018-11-16',
     watsonNluKey: process.env.IBM_WATSON_NLU_KEY,
     watsonNluBaseUrl: process.env.IBM_WATSON_NLU_BASE_URL,
-    watsonNluFullUrl: `${this.watsonNluBaseUrl}/v1/analyze`
+    get watsonNluFullUrl() { return `${this.watsonNluBaseUrl}/v1/analyze` }
 }
