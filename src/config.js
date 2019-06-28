@@ -33,9 +33,9 @@ module.exports = {
     goodreadsAppName: process.env.GOODREADS_APP_NAME,
     goodreadsKey: process.env.GOODREADS_KEY,
     goodreadsSecret: process.env.GOODREADS_SECRET,
-    goodreadsBaseUrl: `https://www.goodreads.com/`,
+    goodreadsBaseUrl: `https://www.goodreads.com`,
     get goodreadsSearchBooksByTitleUrl() { return `${this.goodreadsBaseUrl}/search/index.xml` },
-    get goodreadsSearchBookByIdUrl() { return `${this.goodreadsBaseUrl}/book/show/` },
+    get goodreadsSearchBookByIdUrl() { return `${this.goodreadsBaseUrl}/book/show` },
     get goodreadsGetReviewByIsbnUrl() { return `${this.goodreadsBaseUrl}/api/reviews_widget_iframe` },
 
     // ibm variables
