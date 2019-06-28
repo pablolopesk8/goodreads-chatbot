@@ -2,7 +2,6 @@
  * Service to provide an integration with Goodreads API
  */
 const request = require('request-promise-native');
-const camelCase = require("camelcase");
 const xmlJs = require("xml-js");
 const config = require("../config");
 const HTMLParser = require('node-html-parser');
@@ -57,6 +56,8 @@ const GetBookById = async (goodreadsId) => {
  * Get a list of books (delimited by numOfBooks) on Goodreads API using a title
  * @param {String} bookTitle 
  * @param {Number} numOfBooks number of books have be returned. Default 5
+ * @returns {Array} array of books found
+ * @throws {Error} title-required | goodreadsapi-generic
  */
 const GetBooksByTitle = async (bookTitle, numOfBooks = 5) => {
     // bookTitle is required
@@ -95,6 +96,13 @@ const GetBooksByTitle = async (bookTitle, numOfBooks = 5) => {
     }
 }
 
+/**
+ * Get reviews about a book, setting the num of reviews
+ * @param {Stirng} isbn 
+ * @param {Number} maxReviews number to limit the number of reviews
+ * @returns {Array} array of reviews found
+ * @throws {Error} isbn-required | goodreadsapi-generic
+ */
 const GetReviewsByISBN = async (isbn, maxReviews = 10) => {
     // isbn is required
     if (!isbn) {

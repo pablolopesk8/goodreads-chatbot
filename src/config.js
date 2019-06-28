@@ -40,7 +40,5 @@ module.exports = {
 
     // ibm variables
     watsonApiVersion: '2018-11-16',
-    watsonNluKey: process.env.IBM_WATSON_NLU_KEY,
-    watsonNluBaseUrl: process.env.IBM_WATSON_NLU_BASE_URL,
-    get watsonNluFullUrl() { return `${this.watsonNluBaseUrl}/v1/analyze` }
+    watsonNluKey: process.env.IBM_WATSON_NLU_KEY
 }

@@ -1,7 +1,7 @@
 const should = require('should'); // eslint-disable-line
 const { GetBookById, GetBooksByTitle, GetReviewsByISBN } = require('../../src/services/goodreadsApi.service');
 
-describe('GoodeadsApi Service Test', () => {
+describe('GoodreadsApi Service Test', () => {
     describe('Get a Book using the Goodreads ID', () => {
         it('Should be able to get a book passing a valid ID', async () => {
             const books = await GetBookById("27598494");
