@@ -1,5 +1,7 @@
 const config = require('../config');
 const { verifyTokenQuery } = require('../validators/verifyTokenQuery.validator');
+const { handleMessagesBodyValidator } = require('../validators/handleMessagesBody.validator');
+const { webhookEventValidator } = require('../validators/webhookEvent.validator');
 
 /**
  * Business rules related to webhook
@@ -12,13 +14,48 @@ const controller = function () {
 	 */
     const handleMessages = async (req, res) => {
         try {
-            //
+            // parse and validate the body of request
+            const { object, entry: entries } = req.body;
+            await handleMessagesBodyValidator({ object, entries });
+
+            // iterates over each entry - there may be multiple if batched
+            for (let i = 0, len = entries.length; i < len; i++) {
+                // parse and validate the webhook event
+                const webhookEvent = entries[i].messaging[0];// todo validate this messaging object
+                await webhookEventValidator(webhookEvent);
+
+                // returns a '200 OK' response to all requests
+                res.status(200);
+                return res.send("EVENT_RECEIVED");
+
+                /* GraphAPi.getUserProfile(senderPsid);
+                let receiveMessage = new Receive(users[senderPsid], webhookEvent);
+                return receiveMessage.handleMessage(); */
+            }
         } catch (err) {
             // set the message to return
             switch (err.message) {
+                case "required-object":
+                case "type-object":
+                case "pattern-object":
+                    // Returns a '404 Not Found' if event is not from a page subscription
+                    res.status(404);
+                    return res.send();
+                case "required-entries":
+                case "type-entries":
+                    res.status(422);
+                    return res.send("entries is required and needs to be an array");
+                case "required-sender":
+                case "type-sender":
+                    res.status(422);
+                    return res.send("A sender is required for each entry of message and needs to be an object");
+                case "required-sender.id":
+                case "type-sender.id":
+                    res.status(422);
+                    return res.send("An id is required for each sender and needs to be a string");
                 default:
                     res.status(500);
-                    return res.send("Error in parameters");
+                    return res.send("Internal Error - We will fix this soon!");
             }
         }
     }
