@@ -1,7 +1,6 @@
 /**
  * Service to create templates for all messages of chatbot
  */
-const config = require('../config');
 const i18n = require('../i18n.config');
 
 /**
@@ -98,4 +97,28 @@ const SuggestMessage = (suggestType = 'nonconclusive') => {
     return template;
 }
 
-module.exports = { WelcomeMessage, BooksListMessage, SuggestMessage };
+/**
+ * Template for generic error message
+ * @return {Object} template generated
+ */
+const ErrorMessage = () => {
+    const template = [
+        {
+            text: i18n.__("errorMessage.defaultMessage")
+        },
+        {
+            text: i18n.__("errorMessage.startoverMessage"),
+            quick_replies: [
+                {
+                    content_type: "text",
+                    title: i18n.__("buttonsDefault.startOver"),
+                    payload: "START_OVER"
+                }
+            ]
+        }
+    ];
+
+    return template;
+}
+
+module.exports = { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage };

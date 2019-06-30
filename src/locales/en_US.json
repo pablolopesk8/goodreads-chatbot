@@ -18,5 +18,12 @@
         "negative": ":( This book seems a bad option!",
         "nonconclusive": "¯\\_(ツ)_/¯ The opinions about this book are very confused",
         "buttonSearchAnother": "Search another book"
+    },
+    "errorMessage": {
+        "defaultMessage": "An error ocurred and we have been notified and will fix this shortly!",
+        "startoverMessage": "Sorry for this! Do you want start over?"
+    },
+    "buttonsDefault": {
+        "startOver": "Start over"
     }
 }

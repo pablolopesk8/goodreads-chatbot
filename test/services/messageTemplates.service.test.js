@@ -1,5 +1,5 @@
 const should = require('should'); // eslint-disable-line
-const { WelcomeMessage, BooksListMessage, SuggestMessage } = require('../../src/services/messageTemplates.service');
+const { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage } = require('../../src/services/messageTemplates.service');
 
 describe('Message Templates Service Test', () => {
     describe('Welcome Message', () => {
@@ -90,6 +90,23 @@ describe('Message Templates Service Test', () => {
             message.quick_replies[0].should.have.property('content_type').and.be.equal('text');
             message.quick_replies[0].should.have.property('title');
             message.quick_replies[0].should.have.property('payload').and.be.equal('SEARCH_ANOTHER');
+        });
+    });
+
+    describe('Error Message', () => {
+        it('Should be generated a Error message correctly', async () => {
+            const message = ErrorMessage();
+            
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+
+            message[1].should.have.property('text').and.be.a.String();
+            message[1].should.have.property('quick_replies');
+            message[1].quick_replies.should.be.a.Array();
+
+            message[1].quick_replies[0].should.have.property('content_type').and.be.equal('text');
+            message[1].quick_replies[0].should.have.property('title');
+            message[1].quick_replies[0].should.have.property('payload').and.be.equal('START_OVER');
         });
     });
 });
