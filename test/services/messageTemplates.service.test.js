@@ -1,9 +1,11 @@
 const should = require('should'); // eslint-disable-line
-const { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage } = require('../../src/services/messageTemplates.service');
+const {
+    WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAccetableMessage
+} = require('../../src/services/messageTemplates.service');
 
 describe('Message Templates Service Test', () => {
     describe('Welcome Message', () => {
-        it('Should be generated a Welcome message correctly', async () => {
+        it('Should be generated a Welcome message correctly', () => {
             const message = WelcomeMessage('Firstname');
             
             message.should.be.a.Array();
@@ -25,7 +27,7 @@ describe('Message Templates Service Test', () => {
     });
 
     describe('Books List Message', () => {
-        it('Should be generated a Books List message with 5 items, all of them correctly', async () => {
+        it('Should be generated a Books List message with 5 items, all of them correctly', () => {
             const booksArray = [
                 { id: '123', title: 'A book', subTitle: 'An author', imageUrl: 'http://url1.com' },
                 { id: '456', title: '2 book', subTitle: 'Another author', imageUrl: 'http://url2.com' },
@@ -58,7 +60,7 @@ describe('Message Templates Service Test', () => {
     });
 
     describe('Suggest Message', () => {
-        it('Should be generated an affirmative Suggest message correctly', async () => {
+        it('Should be generated an affirmative Suggest message correctly', () => {
             const message = SuggestMessage('affirmative');
             
             message.should.have.property('text').and.be.a.String().and.match(/:\)/);
@@ -69,7 +71,7 @@ describe('Message Templates Service Test', () => {
             message.quick_replies[0].should.have.property('title');
             message.quick_replies[0].should.have.property('payload').and.be.equal('SEARCH_ANOTHER');
         });
-        it('Should be generated a negative Suggest message correctly', async () => {
+        it('Should be generated a negative Suggest message correctly', () => {
             const message = SuggestMessage('negative');
             
             message.should.have.property('text').and.be.a.String().and.match(/:\(/);
@@ -80,7 +82,7 @@ describe('Message Templates Service Test', () => {
             message.quick_replies[0].should.have.property('title');
             message.quick_replies[0].should.have.property('payload').and.be.equal('SEARCH_ANOTHER');
         });
-        it('Should be generated a non-conclusive Suggest message correctly', async () => {
+        it('Should be generated a non-conclusive Suggest message correctly', () => {
             const message = SuggestMessage('nonconclusive');
             
             message.should.have.property('text').and.be.a.String().and.match(/¯\\_\(ツ\)_\/¯/);
@@ -94,7 +96,7 @@ describe('Message Templates Service Test', () => {
     });
 
     describe('Error Message', () => {
-        it('Should be generated a Error message correctly', async () => {
+        it('Should be generated a Error message correctly', () => {
             const message = ErrorMessage();
             
             message.should.be.a.Array();
@@ -109,4 +111,13 @@ describe('Message Templates Service Test', () => {
             message[1].quick_replies[0].should.have.property('payload').and.be.equal('START_OVER');
         });
     });
+
+    describe('Not Acceptable Message', () => {
+        it('Should be generated a message correctly', () => {
+            const message = NotAccetableMessage();
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+        });
+    })
 });

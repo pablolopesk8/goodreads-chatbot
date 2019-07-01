@@ -121,4 +121,14 @@ const ErrorMessage = () => {
     return template;
 }
 
-module.exports = { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage };
+const NotAccetableMessage = () => {
+    const template = [
+        {
+            text: i18n.__("notAcceptable.text")
+        }
+    ];
+
+    return template;
+}
+
+module.exports = { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAccetableMessage };

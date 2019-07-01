@@ -23,6 +23,9 @@
         "defaultMessage": "An error ocurred and we have been notified and will fix this shortly!",
         "startoverMessage": "Sorry for this! Do you want start over?"
     },
+    "notAcceptable": {
+        "text": "Sorry, but now I only accept text and buttons clicks"
+    },
     "buttonsDefault": {
         "startOver": "Start over"
     }
