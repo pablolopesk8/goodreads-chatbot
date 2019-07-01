@@ -1,8 +1,6 @@
 /**
  * Service to provide operations with users
  */
-const request = require('request-promise-native');
-const config = require("../config");
 const { GetBasicUserProfile } = require('./graphApi.service');
 const Users = require('../models/users.model');
 

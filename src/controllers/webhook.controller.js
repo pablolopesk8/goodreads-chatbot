@@ -2,6 +2,8 @@ const config = require('../config');
 const { verifyTokenQuery } = require('../validators/verifyTokenQuery.validator');
 const { handleMessagesBodyValidator } = require('../validators/handleMessagesBody.validator');
 const { webhookEventValidator } = require('../validators/webhookEvent.validator');
+const { GetUserLocal } = require('../services/users.service');
+const Messages = require('../classes/messages.class');
 
 /**
  * Business rules related to webhook
@@ -21,14 +23,21 @@ const controller = function () {
             // iterates over each entry - there may be multiple if batched
             for (let i = 0, len = entries.length; i < len; i++) {
                 // parse and validate the webhook event
-                const webhookEvent = entries[i].messaging[0];// todo validate this messaging object
+                const webhookEvent = entries[i].messaging[0];
                 await webhookEventValidator(webhookEvent);
+
+                // get user from local database, using the sender id
+                const senderId = webhookEvent.sender.id;
+                const user = await GetUserLocal(senderId);
+
+                const message = new Messages(user, webhookEvent);
+                message.handleMessages();
 
                 // returns a '200 OK' response to all requests
                 res.status(200);
                 return res.send("EVENT_RECEIVED");
 
-                /* GraphAPi.getUserProfile(senderPsid);
+                /*
                 let receiveMessage = new Receive(users[senderPsid], webhookEvent);
                 return receiveMessage.handleMessage(); */
             }
