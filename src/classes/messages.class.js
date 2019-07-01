@@ -5,9 +5,11 @@ const { SendMessage } = require('../services/graphApi.service');
 const { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage } = require('../services/messageTemplates.service');
 
 class MessageClass {
-    constructor(user, webhookEvent) {
+    // constructor method has a default delay, that can be overwrited
+    constructor(user, webhookEvent, delay = 1000) {
         this.user = user;
         this.webhookEvent = webhookEvent;
+        this.delay = delay;
     }
 
     handleMessages() {
@@ -29,14 +31,38 @@ class MessageClass {
         }
     }
 
-    sendMessage(messages) {
-        // message is ever an array, even when has only one message
-        let delay = 0;
-        for (let message of messages) {
-            // call Graph to send message, using timeout to make the necessary delay
-            setTimeout(() => SendMessage(this.user.messengerId ,message), delay);
-            delay++;
+    /**
+     * Send all messages, considering that always receive an array
+     * @param {Array} messages array of message objects
+     * @return {Boolean}
+     */
+    async sendMessage(messages) {
+        try {
+            // messages is ever an array, even one item
+            // so, interate in array and send message, sleeping between each
+            for (let i = 0, len = messages.length; i < len; i++) {
+                await SendMessage(this.user.messengerId, messages[i]);
+                await this.sleep();
+            }
+
+            return true;
+        } catch (err) {
+            /**
+             * @todo
+             * if occurs any error when sending message, must to be NOTHING
+             * but, in the future, will be created a log system to log the errors
+             * now, the only action here is return false
+             */
+            //console.log(err);
+            return false;
         }
+    }
+
+    /**
+     * internal method to make a pause during any execution
+     */
+    sleep() {
+        return new Promise(resolve => setTimeout(resolve, this.delay));
     }
 }
 

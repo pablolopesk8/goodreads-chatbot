@@ -82,6 +82,10 @@ const SendMessage = async (facebookUserId, messageData) => {
             case 2018108:
             case 1545041:
                 throw new Error("invalid-facebookUserId");
+            case 2018065:
+            case 2018028:
+            case 2018027:
+                throw new Error("invalid-permission");
             default:
                 throw new Error("invalid-messageFormat");
         }
