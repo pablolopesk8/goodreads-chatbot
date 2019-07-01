@@ -36,10 +36,6 @@ const controller = function () {
                 // returns a '200 OK' response to all requests
                 res.status(200);
                 return res.send("EVENT_RECEIVED");
-
-                /*
-                let receiveMessage = new Receive(users[senderPsid], webhookEvent);
-                return receiveMessage.handleMessage(); */
             }
         } catch (err) {
             // set the message to return

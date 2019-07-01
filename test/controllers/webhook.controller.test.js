@@ -2,6 +2,10 @@ const should = require('should'); // eslint-disable-line
 const sinon = require('sinon');
 const config = require('../../src/config');
 const webhookController = require('../../src/controllers/webhook.controller');
+const { DBConnect, DBCloseConnection } = require('../../src/services/db.service');
+
+// variable to be used in tests
+const validFacebookSenderId = '1644224095634421';
 
 describe('Webhook Controller Test', () => {
     describe('GET - Verify Token', () => {
@@ -60,6 +64,13 @@ describe('Webhook Controller Test', () => {
     });
 
     describe('POST - Webhook', () => {
+        // force open and close connection with DB, because it's necessary to execution of this test
+        before(async () => {
+            await DBConnect();
+        });
+        after(async () => {
+            await DBCloseConnection();
+        });
         it('Should be rejected if object is not present on body', async () => {
             const req = { body: { entry: [] } };
             const res = { status: sinon.spy(), send: sinon.spy(), json: sinon.spy() };
@@ -131,7 +142,7 @@ describe('Webhook Controller Test', () => {
             res.send.calledWith('An id is required for each sender and needs to be a string').should.equal(true);
         });
         it('Should be accpeted if the object and all entries is valid', async () => {
-            const req = { body: { object: "page", entry: [{ messaging: [{ sender: { id: "123abc" } }] }] } };
+            const req = { body: { object: "page", entry: [{ messaging: [{ sender: { id: validFacebookSenderId } }] }] } };
             const res = { status: sinon.spy(), send: sinon.spy(), json: sinon.spy() };
 
             await webhookController.handleMessages(req, res);

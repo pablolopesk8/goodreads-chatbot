@@ -26,6 +26,12 @@ class MessageClass {
                 this.sendMessage(responses);
             }
         } catch (err) {
+            /**
+             * @todo
+             * if occurs any at this point, must to be NOTHING
+             * but, in the future, will be created a log system to log the errors
+             * now, the only action here is to send a default message to user
+             */
             responses = ErrorMessage();
             this.sendMessage(responses);
         }
