@@ -11,19 +11,19 @@ const i18n = require('../i18n.config');
 const WelcomeMessage = (userName) => {
     const template = [
         {
-            text: i18n.__("getStarted.welcome", { userFirstName: userName })
+            text: i18n.__("getStarted.textWelcome", { userFirstName: userName })
         },
         {
-            text: i18n.__("getStarted.questionTypeSearch"),
+            text: i18n.__("getStarted.textQuestionTypeSearch"),
             quick_replies: [
                 {
                     content_type: "text",
-                    title: i18n.__("getStarted.buttonSearchId"),
+                    title: i18n.__("buttonsDefault.searchById"),
                     payload: "SEARCH_BY_ID"
                 },
                 {
                     content_type: "text",
-                    title: i18n.__("getStarted.buttonSearchName"),
+                    title: i18n.__("buttonsDefault.searchByName"),
                     payload: "SEARCH_BY_NAME"
                 }
             ]
@@ -41,7 +41,7 @@ const WelcomeMessage = (userName) => {
 const BooksListMessage = (booksList) => {
     const template = [
         {
-            text: i18n.__("booksList.initial")
+            text: i18n.__("booksList.textInitial")
         },
         {
             attachment: {
@@ -61,7 +61,7 @@ const BooksListMessage = (booksList) => {
             image_url: book.imageUrl,
             buttons: [{
                 type: 'postback',
-                title: i18n.__("booksList.buttonChooseThis"),
+                title: i18n.__("booksList.buttonChooseBook"),
                 payload: `CHOOSE_BOOK_${book.id}`
             }]
         });
@@ -78,11 +78,11 @@ const BooksListMessage = (booksList) => {
 const SuggestMessage = (suggestType = 'nonconclusive') => {
     let suggestText;
     if (suggestType === "affirmative") {
-        suggestText = i18n.__("suggestBook.affirmative");
+        suggestText = i18n.__("suggestBook.textAffirmative");
     } else if (suggestType === "negative") {
-        suggestText = i18n.__("suggestBook.negative");
+        suggestText = i18n.__("suggestBook.textNegative");
     } else {
-        suggestText = i18n.__("suggestBook.nonconclusive");
+        suggestText = i18n.__("suggestBook.textNonconclusive");
     }
 
     const template = {
@@ -104,10 +104,10 @@ const SuggestMessage = (suggestType = 'nonconclusive') => {
 const ErrorMessage = () => {
     const template = [
         {
-            text: i18n.__("errorMessage.defaultMessage")
+            text: i18n.__("errorMessage.textDefault")
         },
         {
-            text: i18n.__("errorMessage.startoverMessage"),
+            text: i18n.__("errorMessage.textStartover"),
             quick_replies: [
                 {
                     content_type: "text",
@@ -121,14 +121,41 @@ const ErrorMessage = () => {
     return template;
 }
 
-const NotAccetableMessage = () => {
-    const template = [
-        {
-            text: i18n.__("notAcceptable.text")
-        }
-    ];
-
+/**
+ * Template for default not acceptable message
+ * @return {Object} template generated
+ */
+const NotAcceptableMessage = () => {
+    const template = [ { text: i18n.__("notAcceptable.text") } ];
     return template;
 }
 
-module.exports = { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAccetableMessage };
+/**
+ * Template for default misunderstood message, with suggestions
+ * @return {Object} template generated
+ */
+const Misunderstood = () => {
+    const template = [
+        {
+            text: i18n.__("misunderstood.textGeneral")
+        },
+        {
+            text: i18n.__("misunderstood.textLetsTry"),
+            quick_replies: [
+                {
+                    content_type: "text",
+                    title: i18n.__("buttonsDefault.searchById"),
+                    payload: "SEARCH_BY_ID"
+                },
+                {
+                    content_type: "text",
+                    title: i18n.__("buttonsDefault.searchByName"),
+                    payload: "SEARCH_BY_NAME"
+                }
+            ]
+        }
+    ];
+    return template;
+}
+
+module.exports = { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage, Misunderstood };

@@ -1,32 +1,35 @@
 {
-    "profile": {
-        "greeting": "This is a Chatbot for Goodreads Search"
-    },
-    "getStarted": {
-        "welcome": "Hi {{userFirstName}}! Welcome to Goodreads API.",
-        "questionTypeSearch": "Which do you want to search?",
-        "buttonSearchId": "By Goodreads ID",
-        "buttonSearchName": "By Book Name"
-    },
-    "booksList": {
-        "initial": "These are the books matched with your choice",
-        "buttonChooseBook": "Choose this!",
-        "buttonChooseThis": "booksList.buttonChooseThis"
-    },
-    "suggestBook": {
-        "affirmative": ":) This book seems a good option!",
-        "negative": ":( This book seems a bad option!",
-        "nonconclusive": "¯\\_(ツ)_/¯ The opinions about this book are very confused",
-        "buttonSearchAnother": "Search another book"
-    },
-    "errorMessage": {
-        "defaultMessage": "An error ocurred and we have been notified and will fix this shortly!",
-        "startoverMessage": "Sorry for this! Do you want start over?"
-    },
-    "notAcceptable": {
-        "text": "Sorry, but now I only accept text and buttons clicks"
-    },
-    "buttonsDefault": {
-        "startOver": "Start over"
-    }
+	"profile": {
+		"textGreeting": "This is a Chatbot for Goodreads Search"
+	},
+	"getStarted": {
+		"textWelcome": "Hi {{userFirstName}}! Welcome to Goodreads API.",
+		"textQuestionTypeSearch": "Which do you want to search?"
+	},
+	"booksList": {
+		"textInitial": "These are the books matched with your choice",
+		"buttonChooseBook": "Choose this!"
+	},
+	"suggestBook": {
+		"textAffirmative": ":) This book seems a good option!",
+		"textNegative": ":( This book seems a bad option!",
+		"textNonconclusive": "¯\\_(ツ)_/¯ The opinions about this book are very confused",
+		"buttonSearchAnother": "Search another book"
+	},
+	"errorMessage": {
+		"textDefault": "An error ocurred and we have been notified and will fix this shortly!",
+		"textStartover": "Sorry for this! Do you want start over?"
+	},
+	"notAcceptable": {
+		"text": "Sorry, but now I only accept text and buttons clicks"
+	},
+	"misunderstood": {
+		"textGeneral": "I don't understand what you say",
+		"textLetsTry": "Let's try options to search books, ok?"
+	},
+	"buttonsDefault": {
+		"startOver": "Start over",
+		"searchById": "By Goodreads ID",
+		"searchByName": "By Book Name"
+	}
 }

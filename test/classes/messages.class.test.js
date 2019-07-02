@@ -40,16 +40,47 @@ describe('Messages Class Test', () => {
             const webhookEvent = [{}];
             const msgTemplate = "not a valid template";
             const message = new Messages(user, webhookEvent);
-            const result = await message.sendMessage(msgTemplate);
-            result.should.be.false();
+
+            try {
+                await message.sendMessage(msgTemplate);
+            } catch (err) {
+                err.message.should.be.equal('generic-sendmessage');
+            }
         });
         it('Should be sent incorrectly if user was incorrectly', async () => {
             const user = { firstName: 'teste' };
             const webhookEvent = [{}];
             const msgTemplate = WelcomeMessage(user.firstName);
             const message = new Messages(user, webhookEvent);
-            const result = await message.sendMessage(msgTemplate);
+
+            try {
+                await message.sendMessage(msgTemplate);
+            } catch (err) {
+                err.message.should.be.equal('generic-sendmessage');
+            }
+        });
+    });
+    describe('Handle Messages', () => {
+        it('Should be return false (error) when user is invalid', async () => {
+            const user = {};
+            const webhookEvent = [{ postback: { payload: 'GET_STARTED' } }];
+            const message = new Messages(user, webhookEvent);
+            const result = await message.handleMessages();
             result.should.be.false();
+        });
+        it('Should be return \'not acceptable sent\' when webhook has invalid type', async () => {
+            const user = { messengerId: validFacebookSenderId, firstName: 'teste' };
+            const webhookEvent = [{ invalid: {} }];
+            const message = new Messages(user, webhookEvent);
+            const result = await message.handleMessages();
+            result.should.be.a.String().and.be.equal('NOTACCEPTABLE_SENT');
+        });
+        it('Should be return \'not acceptable sent\' when webhook message has invalid type', async () => {
+            const user = { messengerId: validFacebookSenderId, firstName: 'teste' };
+            const webhookEvent = [{ message: { invalid: "invalid" } }];
+            const message = new Messages(user, webhookEvent);
+            const result = await message.handleMessages();
+            result.should.be.a.String().and.be.equal('NOTACCEPTABLE_SENT');
         });
     });
 });

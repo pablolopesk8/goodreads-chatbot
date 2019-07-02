@@ -1,6 +1,6 @@
 const should = require('should'); // eslint-disable-line
 const {
-    WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAccetableMessage
+    WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage
 } = require('../../src/services/messageTemplates.service');
 
 describe('Message Templates Service Test', () => {
@@ -114,7 +114,7 @@ describe('Message Templates Service Test', () => {
 
     describe('Not Acceptable Message', () => {
         it('Should be generated a message correctly', () => {
-            const message = NotAccetableMessage();
+            const message = NotAcceptableMessage();
 
             message.should.be.a.Array();
             message[0].should.have.property('text').and.be.a.String();
