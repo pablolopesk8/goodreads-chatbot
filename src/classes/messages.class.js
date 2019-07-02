@@ -2,7 +2,7 @@
  * Class to manipulate all messages, creating and sending correctly
  */
 const { SendMessage } = require('../services/graphApi.service');
-const { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage } = require('../services/messageTemplates.service');
+const { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage, Misunderstood } = require('../services/messageTemplates.service');
 
 class MessageClass {
     // constructor method has a default delay, that can be overwrited
@@ -12,18 +12,43 @@ class MessageClass {
         this.delay = delay;
     }
 
-    handleMessages() {
+    async handleMessages() {
+        // if this class was created withou messenger id, interrupts the flow
+        if (!this.user.messengerId) {
+            return false;
+        }
+        
         let responses;
 
         try {
+            /**
+             * @todo To create validators for webhook events, validating
+             *          messages, quick replys and postback structures
+             */
             if (this.webhookEvent.message) {
-                //
+                if (this.webhookEvent.message.text) {
+                    responses = this.handleText();
+                    await this.sendMessage(responses);
+                    return "TEXT_RECEIVED";
+                } else if (this.webhookEvent.message.quick_reply) {
+                    responses = this.handleQuickReply();
+                    await this.sendMessage(responses);
+                    return "QUICK_REPLY_RECEIVED";
+                } else {
+                    // now, only text and quick reply are allowed for text
+                    responses = NotAcceptableMessage();
+                    await this.sendMessage(responses);
+                    return "NOTACCEPTABLE_SENT";
+                }
             } else if (this.webhookEvent.postback) {
-                //
+                responses = this.handlePostback();
+                await this.sendMessage(responses);
+                return "POSTBACK_RECEIVED";
             } else {
                 // now, only message and postback are allowed
-                responses = ErrorMessage();
-                this.sendMessage(responses);
+                responses = NotAcceptableMessage();
+                await this.sendMessage(responses);
+                return "NOTACCEPTABLE_SENT";
             }
         } catch (err) {
             /**
@@ -33,7 +58,8 @@ class MessageClass {
              * now, the only action here is to send a default message to user
              */
             responses = ErrorMessage();
-            this.sendMessage(responses);
+            await this.sendMessage(responses);
+            return false;
         }
     }
 
@@ -60,7 +86,7 @@ class MessageClass {
              * now, the only action here is return false
              */
             //console.log(err);
-            return false;
+            throw new Error("generic-sendmessage");
         }
     }
 
@@ -69,6 +95,45 @@ class MessageClass {
      */
     sleep() {
         return new Promise(resolve => setTimeout(resolve, this.delay));
+    }
+
+    handleText() {
+        let response;
+
+        response = Misunderstood();
+
+        return response;
+    }
+
+    handlePostback() {
+        let postback = this.webhookEvent.postback;
+
+        // Check for the special Get Starded with referral
+        let payload;
+        if (postback.referral && postback.referral.type == "OPEN_THREAD") {
+            payload = postback.referral.ref;
+        } else {
+            payload = postback.payload;
+        }
+
+        return this.handlePayload(payload);
+    }
+
+    handleQuickReply() {
+        // Get the payload of the quick reply
+        return this.handlePayload(this.webhookEvent.message.quick_reply.payload);
+    }
+
+    handlePayload(payload) {
+        let response;
+
+        if (payload === 'GET_STARTED') {
+            response = WelcomeMessage(this.user.firstName);
+        } else {
+            response = Misunderstood();
+        }
+
+        return response;
     }
 }
 

@@ -61,26 +61,46 @@ describe('Messages Class Test', () => {
         });
     });
     describe('Handle Messages', () => {
-        it('Should be return false (error) when user is invalid', async () => {
+        it('Should be return false when user messengerId doesnt exists', async () => {
             const user = {};
-            const webhookEvent = [{ postback: { payload: 'GET_STARTED' } }];
-            const message = new Messages(user, webhookEvent);
+            const message = new Messages(user, {});
             const result = await message.handleMessages();
             result.should.be.false();
         });
         it('Should be return \'not acceptable sent\' when webhook has invalid type', async () => {
             const user = { messengerId: validFacebookSenderId, firstName: 'teste' };
-            const webhookEvent = [{ invalid: {} }];
+            const webhookEvent = { invalid: {} };
             const message = new Messages(user, webhookEvent);
             const result = await message.handleMessages();
             result.should.be.a.String().and.be.equal('NOTACCEPTABLE_SENT');
         });
         it('Should be return \'not acceptable sent\' when webhook message has invalid type', async () => {
             const user = { messengerId: validFacebookSenderId, firstName: 'teste' };
-            const webhookEvent = [{ message: { invalid: "invalid" } }];
+            const webhookEvent = { message: { invalid: "invalid" } };
             const message = new Messages(user, webhookEvent);
             const result = await message.handleMessages();
             result.should.be.a.String().and.be.equal('NOTACCEPTABLE_SENT');
+        });
+        it('Should be return \'text received\' when webhook message has a valid text', async () => {
+            const user = { messengerId: validFacebookSenderId, firstName: 'teste' };
+            const webhookEvent = { message: { text: 'Any text here' } };
+            const message = new Messages(user, webhookEvent);
+            const result = await message.handleMessages();
+            result.should.be.a.String().and.be.equal('TEXT_RECEIVED');
+        });
+        it('Should be return \'quick reply received\' when webhook message has a quick reply', async () => {
+            const user = { messengerId: validFacebookSenderId, firstName: 'teste' };
+            const webhookEvent = { message: { quick_reply: { payload: 'ANYTHING' } } };
+            const message = new Messages(user, webhookEvent);
+            const result = await message.handleMessages();
+            result.should.be.a.String().and.be.equal('QUICK_REPLY_RECEIVED');
+        });
+        it('Should be return \'postback received\' when webhook has a postback', async () => {
+            const user = { messengerId: validFacebookSenderId, firstName: 'teste' };
+            const webhookEvent = { postback: { payload: 'GET_STARTED' } };
+            const message = new Messages(user, webhookEvent);
+            const result = await message.handleMessages();
+            result.should.be.a.String().and.be.equal('POSTBACK_RECEIVED');
         });
     });
 });
