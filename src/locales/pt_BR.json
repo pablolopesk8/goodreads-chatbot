@@ -27,6 +27,12 @@
 		"textGeneral": "I don't understand what you say",
 		"textLetsTry": "Let's try options to search books, ok?"
 	},
+	"askIdOrName": {
+		"text": "Allright! Type a {{askFor}} please"
+	},
+	"adviceStartOver": {
+		"text": "Oh, I really don't understand you. Let's start over?"
+	},
 	"buttonsDefault": {
 		"startOver": "Start over",
 		"searchById": "By Goodreads ID",

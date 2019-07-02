@@ -27,7 +27,7 @@ db.createCollection("users", {
                     description: "string required"
                 },
                 currentState: {
-                    enum: ["CHOOSING_TYPE_SEARCH", "SEARCHING_BY_ID", "SEARCHING_BY_TITLE", "CHOOSING_BOOK", "VIEWING BOOK", null],
+                    enum: ["CHOOSING_TYPE_SEARCH", "SEARCHING_BY_ID", "SEARCHING_BY_TITLE", "ASKING_FOR_ID", "ASKING_FOR_NAME", "CHOOSING_BOOK", "CHOOSED_BOOK", "VIEWING_SUGGESTION", null],
                     description: "state of user on the conversation flow. not required"
                 },
                 booksShowed: {
@@ -37,6 +37,14 @@ db.createCollection("users", {
                     items: {
                         bsonType: "string"
                     }
+                },
+                bookChoosed: {
+                    bsonType: "string",
+                    description: "string not required"
+                },
+                timesUnderstand: {
+                    bsonType: "number",
+                    description: "number not required"
                 }
             }
         }

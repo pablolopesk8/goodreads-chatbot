@@ -33,6 +33,28 @@ const WelcomeMessage = (userName) => {
     return template;
 };
 
+const StartOverMessage = () => {
+    const template = [
+        {
+            text: i18n.__("getStarted.textQuestionTypeSearch"),
+            quick_replies: [
+                {
+                    content_type: "text",
+                    title: i18n.__("buttonsDefault.searchById"),
+                    payload: "SEARCH_BY_ID"
+                },
+                {
+                    content_type: "text",
+                    title: i18n.__("buttonsDefault.searchByName"),
+                    payload: "SEARCH_BY_NAME"
+                }
+            ]
+        }
+    ];
+
+    return template;
+};
+
 /**
  * Template with a text message and a list of books, generated using image and button
  * @param {Array | Object} booksList
@@ -134,7 +156,7 @@ const NotAcceptableMessage = () => {
  * Template for default misunderstood message, with suggestions
  * @return {Object} template generated
  */
-const Misunderstood = () => {
+const MisunderstoodMessage = () => {
     const template = [
         {
             text: i18n.__("misunderstood.textGeneral")
@@ -155,7 +177,32 @@ const Misunderstood = () => {
             ]
         }
     ];
+
     return template;
 }
 
-module.exports = { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage, Misunderstood };
+const AskIdOrNameMessage = (askFor) => {
+    const template = [ { text: i18n.__("askIdOrName.text", { askFor: askFor }) } ];
+    return template;
+}
+
+const AdviceStartOverMessage = () => {
+    const template = [
+        {
+            text: i18n.__("adviceStartOver.text"),
+            quick_replies: [
+                {
+                    content_type: "text",
+                    title: i18n.__("buttonsDefault.startOver"),
+                    payload: "START_OVER"
+                }
+            ]
+        }
+    ];
+
+    return template;
+}
+
+module.exports = {
+    WelcomeMessage, StartOverMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage, MisunderstoodMessage, AskIdOrNameMessage, AdviceStartOverMessage
+};

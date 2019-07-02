@@ -1,13 +1,14 @@
 const should = require('should'); // eslint-disable-line
 const {
-    WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage
+    WelcomeMessage, StartOverMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage,
+    MisunderstoodMessage, AskIdOrNameMessage, AdviceStartOverMessage
 } = require('../../src/services/messageTemplates.service');
 
 describe('Message Templates Service Test', () => {
     describe('Welcome Message', () => {
         it('Should be generated a Welcome message correctly', () => {
             const message = WelcomeMessage('Firstname');
-            
+
             message.should.be.a.Array();
             message[0].should.have.property('text').and.be.a.String().and.match(/Firstname/);
 
@@ -26,6 +27,26 @@ describe('Message Templates Service Test', () => {
         });
     });
 
+    describe('Start Over Message', () => {
+        it('Should be generated a message correctly', () => {
+            const message = StartOverMessage();
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+
+            message[0].should.have.property('quick_replies');
+            message[0].quick_replies.should.be.a.Array();
+
+            message[0].quick_replies[0].should.have.property('content_type').and.be.equal('text');
+            message[0].quick_replies[0].should.have.property('title');
+            message[0].quick_replies[0].should.have.property('payload').and.be.equal('SEARCH_BY_ID');
+
+            message[0].quick_replies[1].should.have.property('content_type').and.be.equal('text');
+            message[0].quick_replies[1].should.have.property('title');
+            message[0].quick_replies[1].should.have.property('payload').and.be.equal('SEARCH_BY_NAME');
+        });
+    });
+
     describe('Books List Message', () => {
         it('Should be generated a Books List message with 5 items, all of them correctly', () => {
             const booksArray = [
@@ -37,7 +58,7 @@ describe('Message Templates Service Test', () => {
             ];
 
             const message = BooksListMessage(booksArray);
-            
+
             message.should.be.a.Array();
             message[0].should.have.property('text').and.be.a.String();
 
@@ -62,7 +83,7 @@ describe('Message Templates Service Test', () => {
     describe('Suggest Message', () => {
         it('Should be generated an affirmative Suggest message correctly', () => {
             const message = SuggestMessage('affirmative');
-            
+
             message.should.have.property('text').and.be.a.String().and.match(/:\)/);
             message.should.have.property('quick_replies');
             message.quick_replies.should.be.a.Array();
@@ -73,7 +94,7 @@ describe('Message Templates Service Test', () => {
         });
         it('Should be generated a negative Suggest message correctly', () => {
             const message = SuggestMessage('negative');
-            
+
             message.should.have.property('text').and.be.a.String().and.match(/:\(/);
             message.should.have.property('quick_replies');
             message.quick_replies.should.be.a.Array();
@@ -84,7 +105,7 @@ describe('Message Templates Service Test', () => {
         });
         it('Should be generated a non-conclusive Suggest message correctly', () => {
             const message = SuggestMessage('nonconclusive');
-            
+
             message.should.have.property('text').and.be.a.String().and.match(/¯\\_\(ツ\)_\/¯/);
             message.should.have.property('quick_replies');
             message.quick_replies.should.be.a.Array();
@@ -98,7 +119,7 @@ describe('Message Templates Service Test', () => {
     describe('Error Message', () => {
         it('Should be generated a Error message correctly', () => {
             const message = ErrorMessage();
-            
+
             message.should.be.a.Array();
             message[0].should.have.property('text').and.be.a.String();
 
@@ -119,5 +140,56 @@ describe('Message Templates Service Test', () => {
             message.should.be.a.Array();
             message[0].should.have.property('text').and.be.a.String();
         });
-    })
+    });
+
+    describe('Misunderstood Message', () => {
+        it('Should be generated a message correctly', () => {
+            const message = MisunderstoodMessage();
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+
+            message[1].should.have.property('text').and.be.a.String();
+            message[1].should.have.property('quick_replies');
+            message[1].quick_replies.should.be.a.Array();
+
+            message[1].quick_replies[0].should.have.property('content_type').and.be.equal('text');
+            message[1].quick_replies[0].should.have.property('title');
+            message[1].quick_replies[0].should.have.property('payload').and.be.equal('SEARCH_BY_ID');
+
+            message[1].quick_replies[1].should.have.property('content_type').and.be.equal('text');
+            message[1].quick_replies[1].should.have.property('title');
+            message[1].quick_replies[1].should.have.property('payload').and.be.equal('SEARCH_BY_NAME');
+        });
+    });
+
+    describe('Ask Id Or Name Message', () => {
+        it('Should be generated a message correctly with \'id\' as parameter', () => {
+            const message = AskIdOrNameMessage('id');
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String().and.match(/id/);
+        });
+        it('Should be generated a message correctly with \'name\' as parameter', () => {
+            const message = AskIdOrNameMessage('name');
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String().and.match(/name/);
+        });
+    });
+
+    describe('Advice Start Over Message', () => {
+        it('Should be generated a message correctly', () => {
+            const message = AdviceStartOverMessage();
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+            message[0].should.have.property('quick_replies');
+            message[0].quick_replies.should.be.a.Array();
+
+            message[0].quick_replies[0].should.have.property('content_type').and.be.equal('text');
+            message[0].quick_replies[0].should.have.property('title');
+            message[0].quick_replies[0].should.have.property('payload').and.be.equal('START_OVER');
+        });
+    });
 });
