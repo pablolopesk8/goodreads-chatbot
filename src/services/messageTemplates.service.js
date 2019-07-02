@@ -33,6 +33,10 @@ const WelcomeMessage = (userName) => {
     return template;
 };
 
+/**
+ * Template for a message similar to Welcome, but without the welcome text
+ * @returns {Array} template generated
+ */
 const StartOverMessage = () => {
     const template = [
         {
@@ -181,11 +185,20 @@ const MisunderstoodMessage = () => {
     return template;
 }
 
+/**
+ * Template for a simple message, asking for id or name
+ * @param {String} askFor what is needed ask for
+ * @returns {Array} template generated
+ */
 const AskIdOrNameMessage = (askFor) => {
     const template = [ { text: i18n.__("askIdOrName.text", { askFor: askFor }) } ];
     return template;
 }
 
+/**
+ * Template for a message giving an advice start over, normally after many misunderstoods
+ * @returns {Array} template generated
+ */
 const AdviceStartOverMessage = () => {
     const template = [
         {

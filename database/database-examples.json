@@ -1,0 +1,29 @@
+/* eslint-disable */
+db.auth("admin","123@Abc")
+db.users.find().pretty()
+
+// insert user with only required attrs
+db.users.insert({
+    messengerId: "123456abc",
+    firstName: "My First Name"
+})
+// insert user with all attrs
+db.users.insert({
+    messengerId: "123456abcd",
+    firstName: "Second First Name",
+    currentState: "CHOOSED_BOOK",
+    booksShowed: ["123", "456", "789"],
+    bookChoosed: "789",
+    timesUnderstand: 2
+})
+// update user with all attrs
+db.users.updateOne(
+    {messengerId: "123456abcd"},
+    {$set: {
+        firstName: "Other First Name",
+        currentState: "SEARCHING_BY_TITLE",
+        booksShowed: ["123", "456", "789", "001", "abc"],
+        bookChoosed: "123",
+        timesUnderstand: 3
+    }}
+)
