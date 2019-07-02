@@ -1,8 +1,9 @@
 /**
- * Class to manipulate all messages, creating and sending correctly
+ * Class to handle correctly each message received, and send necessary messages
  */
 const { SendMessage } = require('../services/graphApi.service');
-const { WelcomeMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage, Misunderstood } = require('../services/messageTemplates.service');
+const { ErrorMessage, NotAcceptableMessage } = require('../services/messageTemplates.service');
+const { HandleText, HandleQuickReply, HandlePostback } = require('../services/handleMessages.service');
 
 class MessageClass {
     // constructor method has a default delay, that can be overwrited
@@ -17,7 +18,7 @@ class MessageClass {
         if (!this.user.messengerId) {
             return false;
         }
-        
+
         let responses;
 
         try {
@@ -27,27 +28,35 @@ class MessageClass {
              */
             if (this.webhookEvent.message) {
                 if (this.webhookEvent.message.text) {
-                    responses = this.handleText();
+                    // get the response passing the user and the text of message
+                    responses = HandleText(this.user, this.webhookEvent.message.text.trim().toLowerCase());
                     await this.sendMessage(responses);
+
                     return "TEXT_RECEIVED";
                 } else if (this.webhookEvent.message.quick_reply) {
-                    responses = this.handleQuickReply();
+                    // get the response passing the user and quick reply content
+                    responses = HandleQuickReply(this.user, this.webhookEvent.message.quick_reply);
                     await this.sendMessage(responses);
+
                     return "QUICK_REPLY_RECEIVED";
                 } else {
                     // now, only text and quick reply are allowed for text
                     responses = NotAcceptableMessage();
                     await this.sendMessage(responses);
+                    
                     return "NOTACCEPTABLE_SENT";
                 }
             } else if (this.webhookEvent.postback) {
-                responses = this.handlePostback();
+                // get the response passing the user and postback content
+                responses = HandlePostback(this.user, this.webhookEvent.postback);
                 await this.sendMessage(responses);
+
                 return "POSTBACK_RECEIVED";
             } else {
                 // now, only message and postback are allowed
                 responses = NotAcceptableMessage();
                 await this.sendMessage(responses);
+
                 return "NOTACCEPTABLE_SENT";
             }
         } catch (err) {
@@ -95,45 +104,6 @@ class MessageClass {
      */
     sleep() {
         return new Promise(resolve => setTimeout(resolve, this.delay));
-    }
-
-    handleText() {
-        let response;
-
-        response = Misunderstood();
-
-        return response;
-    }
-
-    handlePostback() {
-        let postback = this.webhookEvent.postback;
-
-        // Check for the special Get Starded with referral
-        let payload;
-        if (postback.referral && postback.referral.type == "OPEN_THREAD") {
-            payload = postback.referral.ref;
-        } else {
-            payload = postback.payload;
-        }
-
-        return this.handlePayload(payload);
-    }
-
-    handleQuickReply() {
-        // Get the payload of the quick reply
-        return this.handlePayload(this.webhookEvent.message.quick_reply.payload);
-    }
-
-    handlePayload(payload) {
-        let response;
-
-        if (payload === 'GET_STARTED') {
-            response = WelcomeMessage(this.user.firstName);
-        } else {
-            response = Misunderstood();
-        }
-
-        return response;
     }
 }
 
