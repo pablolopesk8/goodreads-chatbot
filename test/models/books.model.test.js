@@ -55,19 +55,20 @@ describe('Model Books Test', () => {
             });
         });
 
-        it('Should be have a validation for shouldBuy is a boolean', () => {
+        it('Should be have a validation for shouldBuy is an item for enum list', () => {
             const book = new Books({
                 goodreadsId: "123456asd",
                 title: "any title of book",
                 author: "Unknown Author",
                 smallImage: "http://url.com",
                 reviews: [],
-                shouldBuy: "not boolean"
+                shouldBuy: "yes"
             });
 
             book.validate((err) => {
                 err.errors.should.have.property('shouldBuy');
-                err.errors['shouldBuy'].should.have.property('message').be.equal('Cast to Boolean failed for value "not boolean" at path "shouldBuy"');
+                err.errors['shouldBuy'].should.have.property('message')
+                    .be.equal('`yes` is not a valid enum value for path `shouldBuy`.');
             });
         });
 
@@ -127,7 +128,7 @@ describe('Model Books Test', () => {
                 smallImage: "http://url.com",
                 isbn: "987qwer",
                 reviews: [],
-                shouldBuy: false,
+                shouldBuy: 'NO',
                 other: 123,
                 anyOther: [1, 'a']
             });

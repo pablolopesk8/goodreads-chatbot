@@ -29,7 +29,10 @@ const booksModel = new Schema({
     },
     isbn: String,
     reviews: [ String ],
-    shouldBuy: Boolean
+    shouldBuy: {
+        type: String,
+        enum: ['YES', 'NO', 'DOUBT', null]
+    }
 });
 
 module.exports = mongoose.model('Books', booksModel);

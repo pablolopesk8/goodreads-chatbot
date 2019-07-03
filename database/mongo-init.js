@@ -87,7 +87,7 @@ db.createCollection("books", {
                     }
                 },
                 shouldBuy: {
-                    bsonType: "bool",
+                    enum: ["YES", "NO", "DOUBT", null],
                     description: "information if user should by or not. not required"
                 }
             }
