@@ -63,7 +63,7 @@ const verifyEmotion = (emotionObject, minAcceptable = 0.40) => {
         return acceptArray[0];
     } else {
         // if there more than one AND one of them is joy, return joy
-        if (acceptArray.indexOf('joy') < 0) {
+        if (acceptArray.indexOf('joy') >= 0) {
             return "joy";
         } else {
             // if there are not joy in array, return sadness
