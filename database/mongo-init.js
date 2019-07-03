@@ -42,7 +42,7 @@ db.createCollection("users", {
                     bsonType: "string",
                     description: "string not required"
                 },
-                timesUnderstand: {
+                timesNotUnderstand: {
                     bsonType: "number",
                     description: "number not required"
                 }

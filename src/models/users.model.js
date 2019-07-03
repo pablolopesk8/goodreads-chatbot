@@ -21,9 +21,11 @@ const usersModel = new Schema({
     },
     currentState: {
         type: String,
-        enum: ["CHOOSING_TYPE_SEARCH", "SEARCHING_BY_ID", "SEARCHING_BY_TITLE", "CHOOSING_BOOK", "VIEWING BOOK", null]
+        enum: ["CHOOSING_TYPE_SEARCH", "SEARCHING_BY_ID", "SEARCHING_BY_TITLE", "ASKING_FOR_ID", "ASKING_FOR_NAME", "CHOOSING_BOOK", "CHOOSED_BOOK", "VIEWING_SUGGESTION", null]
     },
-    booksShowed: [ String ]
+    booksShowed: [ String ],
+    bookChoosed: String,
+    timesNotUnderstand: Number
 });
 
 module.exports = mongoose.model('Users', usersModel);

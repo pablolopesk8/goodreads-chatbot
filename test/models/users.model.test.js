@@ -66,12 +66,14 @@ describe('Model User Test', () => {
             });
         });
 
-        it('Should be created with messengerId, firstName, currentState, booksShowed and any other properties', () => {
+        it('Should be created with messengerId, firstName, currentState, booksShowed, bookChoosed and timesNotUnderstand and any other properties', () => {
             const user = new Users({
                 messengerId: "123456asd",
                 firstName: "name",
                 currentState: "CHOOSING_TYPE_SEARCH",
-                booksShowed: [],
+                booksShowed: [ "123" ],
+                bookChoosed: "123",
+                timesNotUnderstand: 1,
                 other: 123,
                 anyOther: [1, 'a']
             });
