@@ -1,6 +1,7 @@
 const should = require('should'); // eslint-disable-line
 const Books = require('../../src/models/books.model');
 
+
 describe('Model Books Test', () => {
     describe('Model validation tests', () => {
         it('Should be have a validation for goodreadsId required', () => {
@@ -68,6 +69,26 @@ describe('Model Books Test', () => {
                 err.errors.should.have.property('shouldBuy');
                 err.errors['shouldBuy'].should.have.property('message').be.equal('Cast to Boolean failed for value "not boolean" at path "shouldBuy"');
             });
+        });
+
+        it('Should be have a validation for goodreadsId not unique', () => {
+            /**
+             * @todo
+             * doesn't exists a validation for an unique field on mongoose, natively
+             * so, I need to construct this validation manually in the future
+             * and when it's constructed, I need insert data manually in database before of validation
+             */
+            /* const book = new Books({
+                goodreadsId: "27765527",
+                title: "any title of book",
+                author: "Unknown Author",
+                smallImage: "http://url.com"
+            });
+
+            book.validate((err) => {
+                err.errors.should.have.property('goodreadsId');
+                err.errors['goodreadsId'].should.have.property('message').be.equal('Cast to Boolean failed for value "not boolean" at path "shouldBuy"');
+            }); */
         });
 
         it('Should be created only with goodreadsId, title, author and smallImage', () => {

@@ -25,6 +25,7 @@
     > RESPONSE: SuggestMessage and button START_OVER
     > USER STATE - VIEWING_SUGGESTION
 9. User click in Start Over button and is redirect to step 2
+    > POST - QUICK_REPLY - START_OVER
 
 ## Exceptions
 

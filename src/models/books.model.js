@@ -17,18 +17,15 @@ const booksModel = new Schema({
     },
     title: {
         type: String,
-        required: [true, 'title is required'],
-        unique: true
+        required: [true, 'title is required']
     },
     author: {
         type: String,
-        required: [true, 'author is required'],
-        unique: true
+        required: [true, 'author is required']
     },
     smallImage: {
         type: String,
-        required: [true, 'smallImage is required'],
-        unique: true
+        required: [true, 'smallImage is required']
     },
     isbn: String,
     reviews: [ String ],

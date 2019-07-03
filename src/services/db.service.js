@@ -11,7 +11,8 @@ const mongoose = require('mongoose');
 const DBConnect = async () => {
     const con = await mongoose.connect(`mongodb://${config.mongodbHost}:${config.mongodbPort}/${config.mongodbDatabase}`, {
         auth: { user: config.mongodbUser, password: config.mongodbPass },
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useFindAndModify: false
     });
     //console.log(`Connected to mongodb with: ${config.mongodbHost}:${config.mongodbPort}/${config.mongodbDatabase}`);
     return con;

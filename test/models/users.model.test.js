@@ -45,6 +45,21 @@ describe('Model User Test', () => {
             });
         });
 
+        it('Should be have a validation for goodreadsId not unique', () => {
+            /**
+             * @todo
+             * doesn't exists a validation for an unique field on mongoose natively
+             * so, I need to construct this validation manually in the future
+             * and when it's constructed, I need insert data manually in database before of validation
+             */
+            /* const user = new Users({ messengerId: "123456asd", firstName: "name" });
+
+            user.validate((err) => {
+                err.errors.should.have.property('messengerId');
+                err.errors['messengerId'].should.have.property('message');
+            }); */
+        });
+
         it('Should be created only with messengerId and firstName', () => {
             const user = new Users({ messengerId: "123456asd", firstName: "name" });
 
