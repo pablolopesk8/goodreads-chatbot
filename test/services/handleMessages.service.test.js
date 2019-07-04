@@ -15,7 +15,12 @@ describe('Handle Messages Service Test', () => {
     before(async () => {
         await DBConnect();
 
-        // before start the tests, create an user to be used in the tests
+        // delete user and books to avoid errors for unique key
+        await Users.deleteOne({ messengerId: '1644224095634421' });
+        await Books.deleteOne({ goodreadsId: '27598494' });
+        await Books.deleteOne({ goodreadsId: '27765527' });
+
+        // create an user to be used in the tests
         user = await Users.create({ messengerId: '1644224095634421', firstName: 'Testuser' });
         user = user.toJSON();
 
@@ -28,7 +33,6 @@ describe('Handle Messages Service Test', () => {
             isbn: 'B016OFGWNI'
         });
         bookGood = bookGood.toJSON();
-
         bookDoubt = await Books.create({
             goodreadsId: '27765527',
             title: 'About the Serious Message of the Play Auto Da Compadecida',

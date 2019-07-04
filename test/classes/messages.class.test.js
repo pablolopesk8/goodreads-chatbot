@@ -1,4 +1,5 @@
 const should = require('should'); // eslint-disable-line
+const { DBConnect, DBCloseConnection } = require('../../src/services/db.service');
 const Messages = require('../../src/classes/messages.class');
 const { WelcomeMessage } = require('../../src/services/messageTemplates.service');
 
@@ -6,6 +7,13 @@ const { WelcomeMessage } = require('../../src/services/messageTemplates.service'
 const validFacebookSenderId = '1644224095634421';
 
 describe('Messages Class Test', () => {
+    // force open and close connection with DB, because it's necessary to execution of this test
+    before(async () => {
+        await DBConnect();
+    });
+    after(async () => {
+        await DBCloseConnection();
+    });
     describe('Class constructor', () => {
         it('Should be created correctly when passed user and webhook', async () => {
             const message = new Messages({}, [{}]);
