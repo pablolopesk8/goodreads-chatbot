@@ -1,42 +1,57 @@
 {
-	"profile": {
-		"textGreeting": "This is a Chatbot for Goodreads Search"
-	},
-	"getStarted": {
-		"textWelcome": "Hi {{userFirstName}}! Welcome to Goodreads API.",
-		"textQuestionTypeSearch": "Which do you want to search?"
-	},
-	"booksList": {
-		"textInitial": "These are the books matched with your choice",
-		"buttonChooseBook": "Choose this!"
-	},
-	"suggestBook": {
-		"textAffirmative": ":) This book seems a good option!",
-		"textNegative": ":( This book seems a bad option!",
-		"textNonconclusive": "¯\\_(ツ)_/¯ The opinions about this book are very confused",
-		"buttonSearchAnother": "Search another book"
-	},
-	"errorMessage": {
-		"textDefault": "An error ocurred and we have been notified and will fix this shortly!",
-		"textStartover": "Sorry for this! Do you want start over?"
-	},
-	"notAcceptable": {
-		"text": "Sorry, but now I only accept text and buttons clicks"
-	},
-	"misunderstood": {
-		"textGeneral": "I don't understand what you say",
-		"textLetsTry": "Let's try options to search books, ok?"
-	},
-	"askIdOrName": {
-		"textId": "Allright! Type an id please",
-		"textName": "Well! Type a name please"
-	},
-	"adviceStartOver": {
-		"text": "Oh, I really don't understand you. Let's start over?"
-	},
-	"buttonsDefault": {
-		"startOver": "Start over",
-		"searchById": "By Goodreads ID",
-		"searchByName": "By Book Name"
-	}
+    "profile": {
+        "textGreeting": "This is a Chatbot for Goodreads Search"
+    },
+    "getStarted": {
+        "textWelcome": "Hi {{userFirstName}}! Welcome to Goodreads API.",
+        "textQuestionTypeSearch": "Which do you want to search?"
+    },
+    "booksList": {
+        "textInitial": "These are the books matched with your choice",
+        "buttonChooseBook": "Choose this!"
+    },
+    "suggestBook": {
+        "textAffirmative": ":) This book seems a good option!",
+        "textNegative": ":( This book seems a bad option!",
+        "textNonconclusive": "¯\\_(ツ)_/¯ The opinions about this book are very confused",
+        "buttonSearchAnother": "Search another book"
+    },
+    "errorMessage": {
+        "textDefault": "An error ocurred and we have been notified and will fix this shortly!",
+        "textStartover": "Sorry for this! Do you want start over?"
+    },
+    "notAcceptable": {
+        "text": "Sorry, but now I only accept text and buttons clicks"
+    },
+    "misunderstood": {
+        "textGeneral": "I don't understand what you say",
+        "textLetsTry": "Let's try options to search books, ok?"
+    },
+    "askIdOrName": {
+        "textId": "Allright! Type an id please",
+        "textName": "Well! Type a name please"
+    },
+    "adviceStartOver": {
+        "text": "Oh, I really don't understand you. Let's start over?"
+    },
+    "tipChoosingSearch": {
+        "text": "I think do you want to search a book, don't you?"
+    },
+    "tipSearchingBy": {
+        "text": "Oh, wait a moment! I'm searching the books for you, but it may take a little"
+    },
+    "tipChoosingBook": {
+        "text": "Now, you need to choose a book. So, please, click on one of the books that I listed to you"
+    },
+    "tipChoosedBook": {
+        "text": "I understand that the wait can be boring, but I need a little more time to finish the search, ok? ;)"
+    },
+    "tipViewingSuggestion": {
+        "text": "I hope you liked the suggestion :). Now, we can start over if you want. Let's go?"
+    },
+    "buttonsDefault": {
+        "startOver": "Start over",
+        "searchById": "By Goodreads ID",
+        "searchByName": "By Book Name"
+    }
 }

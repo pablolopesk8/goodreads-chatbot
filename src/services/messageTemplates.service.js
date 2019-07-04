@@ -221,6 +221,78 @@ const AdviceStartOverMessage = () => {
     return template;
 }
 
+/**
+ * Template whith a tip when user is in Choosing Search state
+ * @returns {Array} template generated
+ */
+const TipChoosingSearchMessage = () => {
+    const template = [
+        {
+            text: i18n.__("tipChoosingSearch.text"),
+            quick_replies: [
+                {
+                    content_type: "text",
+                    title: i18n.__("buttonsDefault.searchById"),
+                    payload: "SEARCH_BY_ID"
+                },
+                {
+                    content_type: "text",
+                    title: i18n.__("buttonsDefault.searchByName"),
+                    payload: "SEARCH_BY_NAME"
+                }
+            ]
+        }
+    ];
+
+    return template;
+}
+
+/**
+ * Template whith a tip when user is in Searching By anything state
+ * @returns {Array} template generated
+ */
+const TipSearchingByMessage = () => {
+    return [ { text: i18n.__("tipSearchingBy.text") } ];
+}
+
+/**
+ * Template whith a tip when user is in Choosing Book state
+ * @returns {Array} template generated
+ */
+const TipChoosingBookMessage = () => {
+    return [ { text: i18n.__("tipChoosingBook.text") } ];
+}
+
+/**
+ * Template whith a tip when user is in Choosed Book state
+ * @returns {Array} template generated
+ */
+const TipChoosedBookMessage = () => {
+    return [ { text: i18n.__("tipChoosedBook.text") } ];
+}
+
+/**
+ * Template whith a tip when user is in Viewing Suggestion state
+ * @returns {Array} template generated
+ */
+const TipViewingSuggestionMessage = () => {
+    const template = [
+        {
+            text: i18n.__("tipViewingSuggestion.text"),
+            quick_replies: [
+                {
+                    content_type: "text",
+                    title: i18n.__("buttonsDefault.startOver"),
+                    payload: "START_OVER"
+                }
+            ]
+        }
+    ];
+
+    return template;
+}
+
 module.exports = {
-    WelcomeMessage, StartOverMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage, MisunderstoodMessage, AskIdOrNameMessage, AdviceStartOverMessage
+    WelcomeMessage, StartOverMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage, MisunderstoodMessage, AskIdOrNameMessage,
+    TipViewingSuggestionMessage, AdviceStartOverMessage, TipChoosingSearchMessage, TipSearchingByMessage, TipChoosingBookMessage, TipChoosedBookMessage
 };

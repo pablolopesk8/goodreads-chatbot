@@ -2,19 +2,79 @@
  * Services to manipulate messages and to define what is the answer
  */
 const {
-    WelcomeMessage, BooksListMessage, SuggestMessage, MisunderstoodMessage, StartOverMessage, AdviceStartOverMessage, AskIdOrNameMessage
+    WelcomeMessage, BooksListMessage, SuggestMessage, MisunderstoodMessage, StartOverMessage, AdviceStartOverMessage, AskIdOrNameMessage,
+    TipChoosedBookMessage, TipChoosingBookMessage, TipChoosingSearchMessage, TipSearchingByMessage, TipViewingSuggestionMessage
 } = require('./messageTemplates.service');
 const Users = require('../models/users.model');
 const Books = require('../models/books.model');
-const { GetReviewsByISBN } = require('../services/goodreadsApi.service');
+const { GetReviewsByISBN, GetBookById, GetBooksByTitle } = require('../services/goodreadsApi.service');
 const { GetEmotion } = require('../services/watsonNlu.service');
 
+/**
+ * Handle all text messages, manipulating the user and setting the response
+ * @param {Object|MongooseSchema} user 
+ * @param {String} text lower cased string
+ * @returns {MessageTemplate}
+ */
 const HandleText = async (user, text) => {
     let response;
 
-    response = MisunderstoodMessage();
+    // all logic of this handle is based on state of user
+    const state = user.currentState;
 
-    return response;
+    try {
+        // the only text accepted in any state is Start Over
+        if (text === 'start over') {
+            user.currentState = 'CHOOSING_TYPE_SEARCH';
+            await Users.findByIdAndUpdate(user._id, { currentState: 'CHOOSING_TYPE_SEARCH' });
+            response = StartOverMessage();
+        } else {
+            // the main state for this handle is ASKING_FOR_
+            if (state.indexOf('ASKING_FOR_') === 0) {
+                // get what is asked for and change the state of user
+                const askFor = state.substring(state.indexOf('ASKING_FOR_') + 11);
+                user.currentState = `SEARCHING_BY_${askFor}`;
+                await Users.findByIdAndUpdate(user._id, { currentState: 'CHOOSING_TYPE_SEARCH' });
+
+                // get a list of books according what is asked for
+                let booksList = [];
+                if (askFor === 'ID') {
+                    const bookFound = await GetBookById(text);
+                    booksList.push(bookFound);
+                } else {
+                    booksList = await GetBooksByTitle(text);
+                }
+
+                user.currentState = 'CHOOSING_BOOK';
+                await Users.findByIdAndUpdate(user._id, { currentState: 'CHOOSING_BOOK' });
+                response = BooksListMessage(booksList);
+            }// for some states, it must return a tip message
+            else if (state === 'CHOOSING_TYPE_SEARCH') {
+                response = TipChoosingSearchMessage();
+            } else if (state.indexOf('SEARCHING_BY_') === 0) {
+                response = TipSearchingByMessage();
+            } else if (state === 'CHOOSING_BOOK') {
+                response = TipChoosingBookMessage();
+            } else if (state === 'CHOOSED_BOOK') {
+                response = TipChoosedBookMessage();
+            } else if (state === 'VIEWING_SUGGESTION') {
+                response = TipViewingSuggestionMessage()
+            }// in any other case, the return will be a misunderstood
+            else {
+                response = GetMisunderstoodMessage(user);
+            }
+        }
+
+        return response;
+    } catch (err) {
+        /**
+         * @todo
+         * if occurs any error at this point, must to be NOTHING
+         * but, in the future, will be created a log system to log the errors
+         * now, the action here return a misunderstood message
+         */
+        return GetMisunderstoodMessage(user);
+    }
 }
 
 /**
@@ -46,6 +106,12 @@ const HandleQuickReply = async (user, quickReply) => {
     return HandlePayload(user, quickReply.payload);
 }
 
+/**
+ * Handle for make all operations when a payload was received
+ * @param {Object|MongooseSchema} user 
+ * @param {String} payload 
+ * @returns {MessageTemplate}
+ */
 const HandlePayload = async (user, payload) => {
     let response;
 
@@ -106,7 +172,7 @@ const HandlePayload = async (user, payload) => {
             const searchFor = payload.substring(payload.indexOf('SEARCH_BY_') + 10);
 
             // validate if it's a valid option
-            if (['NAME','ID'].includes(searchFor)) {
+            if (['NAME', 'ID'].includes(searchFor)) {
                 user.currentState = `ASKING_FOR_${searchFor}`;
                 await Users.findByIdAndUpdate(user._id, { currentState: `ASKING_FOR_${searchFor}` });
                 response = AskIdOrNameMessage(searchFor.toLowerCase());
@@ -123,7 +189,7 @@ const HandlePayload = async (user, payload) => {
     } catch (err) {
         /**
          * @todo
-         * if occurs any at this point, must to be NOTHING
+         * if occurs any error at this point, must to be NOTHING
          * but, in the future, will be created a log system to log the errors
          * now, the action here return a misunderstood message
          */
@@ -132,8 +198,9 @@ const HandlePayload = async (user, payload) => {
 }
 
 /**
- * Internal method to verify if must return an advice or a misunderstood
+ * Verify if must return an advice or a misunderstood
  * @param {Object|MongooseSchema} user 
+ * @return {MessageTemplate}
  */
 const GetMisunderstoodMessage = async (user) => {
     const times = user.timesNotUnderstand ? user.timesNotUnderstand : 0;
@@ -146,4 +213,4 @@ const GetMisunderstoodMessage = async (user) => {
     }
 }
 
-module.exports = { HandleText, HandleQuickReply, HandlePostback };
+module.exports = { HandleText, HandleQuickReply, HandlePostback, GetMisunderstoodMessage };

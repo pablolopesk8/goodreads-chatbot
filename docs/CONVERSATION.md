@@ -32,5 +32,5 @@
 ## Exceptions
 
 1. At any time, the user can type **start over** and will be redirect to setp 2.1
-2. Will be accpeted text only in setp 5 (except the describe on item above). In other cases, the Chatbot will response with a MisunderstoodMessage
+2. Because of locales complexity, Will be accpeted text only in setp 5 (except the describe on item above). In other cases, the Chatbot will response with a tip about the state of the user
 3. After three times that the Chatbot doesn't understand the user, will be sent a AdviceStartOverMessage with a button that redirect the user to the step 2

@@ -1,7 +1,8 @@
 const should = require('should'); // eslint-disable-line
 const {
     WelcomeMessage, StartOverMessage, BooksListMessage, SuggestMessage, ErrorMessage, NotAcceptableMessage,
-    MisunderstoodMessage, AskIdOrNameMessage, AdviceStartOverMessage
+    MisunderstoodMessage, AskIdOrNameMessage, AdviceStartOverMessage, TipChoosingSearchMessage,
+    TipChoosedBookMessage, TipChoosingBookMessage, TipSearchingByMessage, TipViewingSuggestionMessage
 } = require('../../src/services/messageTemplates.service');
 
 describe('Message Templates Service Test', () => {
@@ -181,6 +182,67 @@ describe('Message Templates Service Test', () => {
     describe('Advice Start Over Message', () => {
         it('Should be generated a message correctly', () => {
             const message = AdviceStartOverMessage();
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+            message[0].should.have.property('quick_replies');
+            message[0].quick_replies.should.be.a.Array();
+
+            message[0].quick_replies[0].should.have.property('content_type').and.be.equal('text');
+            message[0].quick_replies[0].should.have.property('title');
+            message[0].quick_replies[0].should.have.property('payload').and.be.equal('START_OVER');
+        });
+    });
+
+    describe('Tip Choosing Search Message', () => {
+        it('Should be generated a message correctly', () => {
+            const message = TipChoosingSearchMessage();
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+            message[0].should.have.property('quick_replies');
+            message[0].quick_replies.should.be.a.Array();
+
+            message[0].quick_replies[0].should.have.property('content_type').and.be.equal('text');
+            message[0].quick_replies[0].should.have.property('title');
+            message[0].quick_replies[0].should.have.property('payload').and.be.equal('SEARCH_BY_ID');
+
+            message[0].quick_replies[1].should.have.property('content_type').and.be.equal('text');
+            message[0].quick_replies[1].should.have.property('title');
+            message[0].quick_replies[1].should.have.property('payload').and.be.equal('SEARCH_BY_NAME');
+        });
+    });
+
+    describe('Tip Searching By Message', () => {
+        it('Should be generated a message correctly', () => {
+            const message = TipSearchingByMessage();
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+        });
+    });
+
+    describe('Tip Choosing Book Message', () => {
+        it('Should be generated a message correctly', () => {
+            const message = TipChoosingBookMessage();
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+        });
+    });
+
+    describe('Tip Choosed Book Message', () => {
+        it('Should be generated a message correctly', () => {
+            const message = TipChoosedBookMessage();
+
+            message.should.be.a.Array();
+            message[0].should.have.property('text').and.be.a.String();
+        });
+    });
+
+    describe('Tip Viewing Suggestion Message', () => {
+        it('Should be generated a message correctly', () => {
+            const message = TipViewingSuggestionMessage();
 
             message.should.be.a.Array();
             message[0].should.have.property('text').and.be.a.String();

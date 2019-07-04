@@ -2,8 +2,12 @@ const should = require('should'); // eslint-disable-line
 const { DBConnect, DBCloseConnection } = require('../../src/services/db.service');
 const Users = require('../../src/models/users.model');
 const Books = require('../../src/models/books.model');
-const { HandleText, HandleQuickReply, HandlePostback } = require('../../src/services/handleMessages.service');
-const { WelcomeMessage, BooksListMessage, SuggestMessage, MisunderstoodMessage, StartOverMessage, AskIdOrNameMessage } = require('../../src/services/messageTemplates.service');
+const { HandleText, HandleQuickReply, HandlePostback, GetMisunderstoodMessage } = require('../../src/services/handleMessages.service');
+const {
+    WelcomeMessage, BooksListMessage, SuggestMessage, MisunderstoodMessage, StartOverMessage, AskIdOrNameMessage, AdviceStartOverMessage,
+    TipChoosingSearchMessage, TipChoosedBookMessage, TipChoosingBookMessage, TipSearchingByMessage, TipViewingSuggestionMessage
+
+} = require('../../src/services/messageTemplates.service');
 
 // variable to be used in tests
 let user;
@@ -50,7 +54,123 @@ describe('Handle Messages Service Test', () => {
         await DBCloseConnection();
     });
     describe('Handle Text', () => {
+        it(`Should return a 'Book List Message' with 5 itens and change the 'User State' for CHOOSING_BOOK if passed a name and the 'User State' is ASKING_FOR_NAME`, async () => {
+            const text = "Game of Thrones";
+            user.currentState = 'ASKING_FOR_NAME';
+            await Users.findByIdAndUpdate(user._id, { currentState: 'ASKING_FOR_NAME' });
 
+            const result = await HandleText(user, text);
+            
+            result.should.be.a.Array();
+            result[0].should.have.property('text').and.be.a.String();
+            result[1].should.have.property('attachment');
+            result[1].attachment.should.have.property('payload');
+            result[1].attachment.payload.should.have.property('template_type').and.be.equal('generic');
+            result[1].attachment.payload.should.have.property('elements').and.be.a.Array().and.be.length(5);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('CHOOSING_BOOK');
+        });
+        it(`Should return a 'Book List Message' with one item and change the 'User State' for CHOOSING_BOOK if id passed is valid and the 'User State' is ASKING_FOR_ID`, async () => {
+            const text = "27765527";
+            user.currentState = 'ASKING_FOR_ID';
+            await Users.findByIdAndUpdate(user._id, { currentState: 'ASKING_FOR_ID' });
+
+            const result = await HandleText(user, text);
+            
+            result.should.be.a.Array();
+            result[0].should.have.property('text').and.be.a.String();
+            result[1].should.have.property('attachment');
+            result[1].attachment.should.have.property('payload');
+            result[1].attachment.payload.should.have.property('template_type').and.be.equal('generic');
+            result[1].attachment.payload.should.have.property('elements').and.be.a.Array().and.be.length(1);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('CHOOSING_BOOK');
+        });
+        it(`Should return a 'Start Over Message' and set the 'User State' as CHOOSING_TYPE_SEARCH if the text sent is equal 'Start Over'`, async () => {
+            const text = "start over";
+            const expectedResult = StartOverMessage();
+
+            const result = await HandleText(user, text);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('CHOOSING_TYPE_SEARCH');
+        });
+        it(`Should return a tip about 'Choosing Type Search' state and doesn't change the 'User State' if the 'User State' is CHOOSING_TYPE_SEARCH`, async () => {
+            const text = "any text here";
+            const expectedResult = TipChoosingSearchMessage();
+            user.currentState = 'CHOOSING_TYPE_SEARCH';
+            await Users.findByIdAndUpdate(user._id, { currentState: 'CHOOSING_TYPE_SEARCH' });
+
+            const result = await HandleText(user, text);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('CHOOSING_TYPE_SEARCH');
+        });
+        it(`Should return a tip about 'Search By' state and doesn't change the 'User State' if the 'User State' is SEARCHING_BY_{ID|TITLE}`, async () => {
+            const text = "any text here";
+            const expectedResult = TipSearchingByMessage();
+            user.currentState = 'SEARCHING_BY_TITLE';
+            await Users.findByIdAndUpdate(user._id, { currentState: 'SEARCHING_BY_TITLE' });
+
+            const result = await HandleText(user, text);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('SEARCHING_BY_TITLE');
+        });
+        it(`Should return a tip about 'Choosing Book' state and doesn't change the 'User State' if the 'User State' is CHOOSING_BOOK`, async () => {
+            const text = "any text here";
+            const expectedResult = TipChoosingBookMessage();
+            user.currentState = 'CHOOSING_BOOK';
+            await Users.findByIdAndUpdate(user._id, { currentState: 'CHOOSING_BOOK' });
+
+            const result = await HandleText(user, text);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('CHOOSING_BOOK');
+        });
+        it(`Should return a tip about 'Choosed Book' state and doesn't change the 'User State' if the 'User State' is CHOOSED_BOOK`, async () => {
+            const text = "any text here";
+            const expectedResult = TipChoosedBookMessage();
+            user.currentState = 'CHOOSED_BOOK';
+            await Users.findByIdAndUpdate(user._id, { currentState: 'CHOOSED_BOOK' });
+
+            const result = await HandleText(user, text);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('CHOOSED_BOOK');
+        });
+        it(`Should return a tip about 'Viewing Suggestion' state and doesn't change the 'User State' if the 'User State' is VIEWING_SUGGESTION`, async () => {
+            const text = "any text here";
+            const expectedResult = TipViewingSuggestionMessage();
+            user.currentState = 'VIEWING_SUGGESTION';
+            await Users.findByIdAndUpdate(user._id, { currentState: 'VIEWING_SUGGESTION' });
+
+            const result = await HandleText(user, text);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('VIEWING_SUGGESTION');
+        });
+        it(`Should return a 'Misunderstood Message', doesn't change the 'User State' and set the 'timesNotUnderstand' with 1 if is any other state`, async () => {
+            const text = "any text here";
+            const expectedResult = MisunderstoodMessage();
+            user.currentState = null;
+            await Users.findByIdAndUpdate(user._id, { currentState: null, timesNotUnderstand: 0 });
+
+            const result = await HandleText(user, text);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal(null);
+            updatedUser.should.have.property('timesNotUnderstand').and.be.equal(1);
+        });
     });
 
     describe('Handle Quick Reply', () => {
@@ -154,6 +274,31 @@ describe('Handle Messages Service Test', () => {
             const updatedUser = await Users.findById(user._id);
             updatedUser.should.have.property('currentState').and.be.equal('SEARCHING_BY_ID');
             updatedUser.should.have.property('timesNotUnderstand').and.be.equal(1);
+        });
+    });
+
+    describe('Get Misunderstood Message', () => {
+        it(`Should return a 'Misunderstood Message' and plus 1 time when the 'timesNotUnderstand' is less than 3`, async () => {
+            const expectedResult = MisunderstoodMessage();
+            user.timesNotUnderstand = 2;
+            await Users.findByIdAndUpdate(user._id, { timesNotUnderstand: 2 });
+
+            const result = await GetMisunderstoodMessage(user);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('timesNotUnderstand').and.be.equal(3);
+        });
+        it(`Should return a 'Advice Start Over Message' and 0 times when the 'timesNotUnderstand' is greater than or equal 3`, async () => {
+            const expectedResult = AdviceStartOverMessage();
+            user.timesNotUnderstand = 3;
+            await Users.findByIdAndUpdate(user._id, { timesNotUnderstand: 3 });
+
+            const result = await GetMisunderstoodMessage(user);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('timesNotUnderstand').and.be.equal(0);
         });
     });
 });
