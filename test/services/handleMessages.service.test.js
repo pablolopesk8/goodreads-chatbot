@@ -3,7 +3,7 @@ const { DBConnect, DBCloseConnection } = require('../../src/services/db.service'
 const Users = require('../../src/models/users.model');
 const Books = require('../../src/models/books.model');
 const { HandleText, HandleQuickReply, HandlePostback } = require('../../src/services/handleMessages.service');
-const { WelcomeMessage, BooksListMessage, SuggestMessage, MisunderstoodMessage } = require('../../src/services/messageTemplates.service');
+const { WelcomeMessage, BooksListMessage, SuggestMessage, MisunderstoodMessage, StartOverMessage, AskIdOrNameMessage } = require('../../src/services/messageTemplates.service');
 
 // variable to be used in tests
 let user;
@@ -50,25 +50,78 @@ describe('Handle Messages Service Test', () => {
     });
 
     describe('Handle Quick Reply', () => {
+        it(`Should return a 'Start Over Message' and set the 'User State' as CHOOSING_TYPE_SEARCH if sent START_OVER`, async () => {
+            const quickReply = { payload: 'START_OVER' };
+            const expectedResult = StartOverMessage();
 
+            const result = await HandleQuickReply(user, quickReply);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('CHOOSING_TYPE_SEARCH');
+        });
+        it(`Should return a 'Ask For Id or Name Message' and set the 'User State' as ASKING_FOR_ID if sent SEARCH_BY_ID`, async () => {
+            const quickReply = { payload: 'SEARCH_BY_ID' };
+            const expectedResult = AskIdOrNameMessage('id');
+
+            const result = await HandleQuickReply(user, quickReply);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('ASKING_FOR_ID');
+        });
+        it(`Should return a 'Ask For Id or Name Message' and set the 'User State' as ASKING_FOR_NAME if sent SEARCH_BY_NAME`, async () => {
+            const quickReply = { payload: 'SEARCH_BY_NAME' };
+            const expectedResult = AskIdOrNameMessage('name');
+
+            const result = await HandleQuickReply(user, quickReply);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('ASKING_FOR_NAME');
+        });
+        it(`Should return a 'Misunderstood Message', doesn't change the 'User State' and set the 'timesNotUnderstand' with 1 if sent an invalid SEARCH_FOR`, async () => {
+            const quickReply = { payload: 'SEARCH_FOR_OTHER' };
+            const expectedResult = MisunderstoodMessage();
+            await Users.findByIdAndUpdate(user._id, { currentState: 'CHOOSING_BOOK', timesNotUnderstand: 0 });
+
+            const result = await HandleQuickReply(user, quickReply);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('CHOOSING_BOOK');
+            updatedUser.should.have.property('timesNotUnderstand').and.be.equal(1);
+        });
+        it(`Should return a 'Misunderstood Message', doesn't change the 'User State' and set the 'timesNotUnderstand' with 1 if sent an invalid quick reply`, async () => {
+            const quickReply = { payload: 'INVALID_REPLY' };
+            const expectedResult = MisunderstoodMessage();
+            await Users.findByIdAndUpdate(user._id, { currentState: 'SEARCHING_BY_TITLE', timesNotUnderstand: 0 });
+
+            const result = await HandleQuickReply(user, quickReply);
+            result.should.be.deepEqual(expectedResult);
+
+            const updatedUser = await Users.findById(user._id);
+            updatedUser.should.have.property('currentState').and.be.equal('SEARCHING_BY_TITLE');
+            updatedUser.should.have.property('timesNotUnderstand').and.be.equal(1);
+        });
     });
 
     describe('Handle Postback', () => {
         it(`Should return a 'Welcome Message' and set the 'User State' as CHOOSING_TYPE_SEARCH if sent GET_STARTED`, async () => {
-            const webhookEvent = { payload: 'GET_STARTED' };
+            const postback = { payload: 'GET_STARTED' };
             const expectedResult = WelcomeMessage(user.firstName);
 
-            const result = await HandlePostback(user, webhookEvent);
+            const result = await HandlePostback(user, postback);
             result.should.be.deepEqual(expectedResult);
 
             const updatedUser = await Users.findById(user._id);
             updatedUser.should.have.property('currentState').and.be.equal('CHOOSING_TYPE_SEARCH');
         });
         it(`Should return a 'Affirmative Suggest Message', update the 'User State' as VIEWING_SUGGESTION and the 'Book Choosed' if sent CHOOSE_BOOK_{bookId}`, async () => {
-            const webhookEvent = { payload: `CHOOSE_BOOK_${bookGood._id.toString()}` };
+            const postback = { payload: `CHOOSE_BOOK_${bookGood._id.toString()}` };
             const expectedResult = SuggestMessage('affirmative');
 
-            const result = await HandlePostback(user, webhookEvent);
+            const result = await HandlePostback(user, postback);
             result.should.be.deepEqual(expectedResult);
 
             const updatedUser = await Users.findById(user._id);
@@ -76,26 +129,27 @@ describe('Handle Messages Service Test', () => {
             updatedUser.should.have.property('bookChoosed').and.be.equal(bookGood._id.toString());
         });
         it(`Should return a 'Nonconclusive Suggest Message', update the 'User State' as VIEWING_SUGGESTION and the 'Book Choosed' if sent CHOOSE_BOOK_{bookId}`, async () => {
-            const webhookEvent = { payload: `CHOOSE_BOOK_${bookDoubt._id.toString()}` };
+            const postback = { payload: `CHOOSE_BOOK_${bookDoubt._id.toString()}` };
             const expectedResult = SuggestMessage('nonconclusive');
 
-            const result = await HandlePostback(user, webhookEvent);
+            const result = await HandlePostback(user, postback);
             result.should.be.deepEqual(expectedResult);
 
             const updatedUser = await Users.findById(user._id);
             updatedUser.should.have.property('currentState').and.be.equal('VIEWING_SUGGESTION');
             updatedUser.should.have.property('bookChoosed').and.be.equal(bookDoubt._id.toString());
         });
-        it(`Should return a 'Misunderstood Message' and doesn't change the 'User State' if sent an invalid payload`, async () => {
-            const webhookEvent = { payload: 'INVALID_PAYLOAD' };
+        it(`Should return a 'Misunderstood Message', doesn't change the 'User State' and set the 'timesNotUnderstand' with 1 if sent an invalid payload`, async () => {
+            const postback = { payload: 'INVALID_PAYLOAD' };
             const expectedResult = MisunderstoodMessage();
-            await Users.findByIdAndUpdate(user._id, { currentState: 'SEARCHING_BY_ID' });
+            await Users.findByIdAndUpdate(user._id, { currentState: 'SEARCHING_BY_ID', timesNotUnderstand: 0 });
 
-            const result = await HandlePostback(user, webhookEvent);
+            const result = await HandlePostback(user, postback);
             result.should.be.deepEqual(expectedResult);
 
             const updatedUser = await Users.findById(user._id);
             updatedUser.should.have.property('currentState').and.be.equal('SEARCHING_BY_ID');
+            updatedUser.should.have.property('timesNotUnderstand').and.be.equal(1);
         });
     });
 });

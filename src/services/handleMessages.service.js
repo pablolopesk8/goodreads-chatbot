@@ -1,7 +1,9 @@
 /**
  * Services to manipulate messages and to define what is the answer
  */
-const { WelcomeMessage, BooksListMessage, SuggestMessage, MisunderstoodMessage } = require('./messageTemplates.service');
+const {
+    WelcomeMessage, BooksListMessage, SuggestMessage, MisunderstoodMessage, StartOverMessage, AdviceStartOverMessage, AskIdOrNameMessage
+} = require('./messageTemplates.service');
 const Users = require('../models/users.model');
 const Books = require('../models/books.model');
 const { GetReviewsByISBN } = require('../services/goodreadsApi.service');
@@ -19,6 +21,7 @@ const HandleText = async (user, text) => {
  * Handle all postbacks received and redirect to HandlePayload
  * @param {Object|MongooseSchema} user 
  * @param {Object|WebhookEvent} postback 
+ * @returns {HandlePayload|MessageTemplate}
  */
 const HandlePostback = async (user, postback) => {
     // Check for the special Get Starded with referral
@@ -32,6 +35,12 @@ const HandlePostback = async (user, postback) => {
     return HandlePayload(user, payload);
 }
 
+/**
+ * Handle all quick replies received and redirect to HandlePayload
+ * @param {Object|MongooseSchema} user 
+ * @param {Object|WebhookEvent} postback 
+ * @returns {HandlePayload|MessageTemplate}
+ */
 const HandleQuickReply = async (user, quickReply) => {
     // Get the payload of the quick reply
     return HandlePayload(user, quickReply.payload);
@@ -43,9 +52,9 @@ const HandlePayload = async (user, payload) => {
     try {
         // manipulate message, user and books according the payload
         if (payload === 'GET_STARTED') {
-            response = WelcomeMessage(user.firstName);
             user.currentState = 'CHOOSING_TYPE_SEARCH';
             await Users.findByIdAndUpdate(user._id, { currentState: 'CHOOSING_TYPE_SEARCH' });
+            response = WelcomeMessage(user.firstName);
         }// payload CHOOSE_BOOK_{ID}
         else if (payload.indexOf('CHOOSE_BOOK_') === 0) {
             const bookId = payload.substring(payload.indexOf('CHOOSE_BOOK_') + 12);
@@ -87,8 +96,27 @@ const HandlePayload = async (user, payload) => {
             // in all cases, if the opperations succesfully, current state will be changed
             user.currentState = 'VIEWING_SUGGESTION';
             await Users.findByIdAndUpdate(user._id, { currentState: 'VIEWING_SUGGESTION' });
+        }// payload START_OVER
+        else if (payload === 'START_OVER') {
+            user.currentState = 'CHOOSING_TYPE_SEARCH';
+            await Users.findByIdAndUpdate(user._id, { currentState: 'CHOOSING_TYPE_SEARCH' });
+            response = StartOverMessage();
+        }// payload SEARCH_BY_{ID_OR_NAME}
+        else if (payload.indexOf('SEARCH_BY_') === 0) {
+            const searchFor = payload.substring(payload.indexOf('SEARCH_BY_') + 10);
+
+            // validate if it's a valid option
+            if (['NAME','ID'].includes(searchFor)) {
+                user.currentState = `ASKING_FOR_${searchFor}`;
+                await Users.findByIdAndUpdate(user._id, { currentState: `ASKING_FOR_${searchFor}` });
+                response = AskIdOrNameMessage(searchFor.toLowerCase());
+            } else {
+                // if it's a invalid option, get the misunderstood message
+                response = GetMisunderstoodMessage(user);
+            }
         } else {
-            response = MisunderstoodMessage();
+            // if none options accepted, get the misunderstood
+            response = GetMisunderstoodMessage(user);
         }
 
         return response;
@@ -97,8 +125,23 @@ const HandlePayload = async (user, payload) => {
          * @todo
          * if occurs any at this point, must to be NOTHING
          * but, in the future, will be created a log system to log the errors
-         * now, the only action here is to return a misunderstood message
+         * now, the action here return a misunderstood message
          */
+        return GetMisunderstoodMessage(user);
+    }
+}
+
+/**
+ * Internal method to verify if must return an advice or a misunderstood
+ * @param {Object|MongooseSchema} user 
+ */
+const GetMisunderstoodMessage = async (user) => {
+    const times = user.timesNotUnderstand ? user.timesNotUnderstand : 0;
+    if (times >= 3) {
+        await Users.findByIdAndUpdate(user._id, { timesNotUnderstand: 0 });
+        return AdviceStartOverMessage();
+    } else {
+        await Users.findByIdAndUpdate(user._id, { timesNotUnderstand: times + 1 });
         return MisunderstoodMessage();
     }
 }
