@@ -28,7 +28,8 @@
 		"textLetsTry": "Let's try options to search books, ok?"
 	},
 	"askIdOrName": {
-		"text": "Allright! Type a {{askFor}} please"
+		"textId": "Allright! Type an id please",
+		"textName": "Well! Type a name please"
 	},
 	"adviceStartOver": {
 		"text": "Oh, I really don't understand you. Let's start over?"

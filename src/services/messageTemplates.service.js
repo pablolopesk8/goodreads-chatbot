@@ -191,7 +191,12 @@ const MisunderstoodMessage = () => {
  * @returns {Array} template generated
  */
 const AskIdOrNameMessage = (askFor) => {
-    const template = [ { text: i18n.__("askIdOrName.text", { askFor: askFor }) } ];
+    let template;
+    if (askFor === 'name') {
+        template = [ { text: i18n.__("askIdOrName.textName") } ];
+    } else {
+        template = [ { text: i18n.__("askIdOrName.textId") } ];
+    }
     return template;
 }
 
